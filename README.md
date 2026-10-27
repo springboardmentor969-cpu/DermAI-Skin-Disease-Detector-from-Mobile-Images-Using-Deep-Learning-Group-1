@@ -1,0 +1,1 @@
+# DermAI-Skin-Disease-Detector-from-Mobile-Images-Using-Deep-Learning-Group-1
