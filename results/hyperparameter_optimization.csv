@@ -1,0 +1,4 @@
+Model,Learning Rate,Epochs,Training Images,Validation Images,Validation Accuracy,Training Loss
+EfficientNet-B0,0.001,1,960,240,53.33,1.6176
+EfficientNet-B0,0.0001,1,960,240,24.58,1.9242
+EfficientNet-B0,1e-05,1,960,240,15.0,1.9745

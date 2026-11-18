@@ -1,0 +1,3 @@
+Model,Predicted_Class,Model_Score,GradCAM_Image
+ResNet18,nv,0.8567,C:\Users\Admin\Documents\DermAI_Milestone2_Dataset\results\resnet18_gradcam.png
+MobileNetV3-Small,akiec,0.1922,C:\Users\Admin\Documents\DermAI_Milestone2_Dataset\results\mobilenetv3_small_gradcam.png

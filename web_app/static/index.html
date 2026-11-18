@@ -1,0 +1,1270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DermAI | Research Dashboard</title>
+
+<style>
+:root {
+    --navy:#12233f;
+    --teal:#159b91;
+    --mint:#dff7f1;
+    --ink:#23364f;
+    --muted:#718096;
+    --line:#e5edf3;
+    --surface:#fff;
+    --bg:#f3f7fb;
+}
+
+* {
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Inter,"Segoe UI",Arial,sans-serif;
+}
+
+body {
+    background:linear-gradient(135deg,#eef4fb,#f3fbf9);
+    color:var(--ink);
+    min-height:100vh;
+}
+
+.sidebar {
+    position:fixed;
+    inset:0 auto 0 0;
+    width:250px;
+    background:linear-gradient(165deg,#101d36,#173c56 70%,#12615f);
+    padding:28px 18px;
+    color:#fff;
+    z-index:5;
+}
+
+.brand {
+    font-size:27px;
+    font-weight:800;
+    color:#79e1cf;
+    padding:0 10px;
+}
+
+.brand-sub {
+    font-size:10px;
+    letter-spacing:2px;
+    color:#a9bed0;
+    margin:6px 10px 42px;
+}
+
+.nav-btn {
+    display:block;
+    width:100%;
+    border:1px solid transparent;
+    background:transparent;
+    color:#d0dbe8;
+    text-align:left;
+    padding:15px 16px;
+    border-radius:12px;
+    margin:8px 0;
+    cursor:pointer;
+    font-size:14px;
+    transition:.2s;
+}
+
+.nav-btn:hover,
+.nav-btn.active {
+    background:#24566a;
+    border-color:#3f8390;
+    color:#8af0db;
+}
+
+.main {
+    margin-left:250px;
+    padding:28px 34px;
+    max-width:1600px;
+}
+
+.topbar {
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:#ffffffdf;
+    border:1px solid #fff;
+    border-radius:18px;
+    padding:18px 23px;
+    box-shadow:0 8px 28px #203d5c0c;
+    margin-bottom:28px;
+}
+
+.topbar h1 {
+    font-size:25px;
+}
+
+.welcome {
+    color:var(--muted);
+    font-size:13px;
+    margin-top:5px;
+}
+
+.user-menu {
+    position:relative;
+}
+
+.user-button {
+    border:1px solid var(--line);
+    background:#fff;
+    border-radius:11px;
+    padding:11px 15px;
+    color:var(--ink);
+    font-weight:650;
+    cursor:pointer;
+}
+
+.dropdown {
+    display:none;
+    position:absolute;
+    right:0;
+    top:48px;
+    background:#fff;
+    border:1px solid var(--line);
+    box-shadow:0 12px 30px #152b451f;
+    border-radius:12px;
+    padding:14px;
+    width:200px;
+    z-index:10;
+}
+
+.dropdown.show {
+    display:block;
+}
+
+.dropdown small {
+    display:block;
+    color:var(--muted);
+    margin:5px 0 12px;
+}
+
+.logout {
+    width:100%;
+    text-align:left;
+    border:0;
+    background:#fff2f2;
+    color:#b33b45;
+    padding:10px;
+    border-radius:8px;
+    cursor:pointer;
+}
+
+.section {
+    display:none;
+    animation:fade .22s ease;
+}
+
+.section.active {
+    display:block;
+}
+
+@keyframes fade {
+    from {opacity:.5;transform:translateY(5px)}
+    to {opacity:1;transform:none}
+}
+
+h2 {
+    font-size:21px;
+}
+
+.subtitle {
+    color:var(--muted);
+    line-height:1.6;
+    margin:9px 0 22px;
+}
+
+.cards {
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:17px;
+    margin:20px 0;
+}
+
+.card,
+.panel {
+    background:var(--surface);
+    border:1px solid #fff;
+    border-radius:17px;
+    box-shadow:0 8px 26px #1d42600c;
+}
+
+.card {
+    padding:22px;
+}
+
+.card .icon {
+    font-size:24px;
+    margin-bottom:13px;
+}
+
+.card h3 {
+    font-size:13px;
+    color:var(--muted);
+    font-weight:600;
+}
+
+.card strong {
+    display:block;
+    font-size:29px;
+    color:#173b57;
+    margin-top:9px;
+}
+
+.panel {
+    padding:24px;
+    margin:18px 0;
+}
+
+.panel p {
+    color:#667990;
+    line-height:1.75;
+}
+
+.panel h2 {
+    margin-bottom:14px;
+}
+
+.feature-list {
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:12px;
+    margin-top:16px;
+}
+
+.feature {
+    background:#f5fafb;
+    border:1px solid #e7f0f2;
+    border-radius:11px;
+    padding:14px;
+    color:#496276;
+    font-size:14px;
+}
+
+.btn {
+    border:0;
+    border-radius:10px;
+    padding:12px 18px;
+    background:linear-gradient(100deg,#137f88,#26ad9a);
+    color:white;
+    font-weight:700;
+    cursor:pointer;
+    margin-top:14px;
+}
+
+.btn:disabled {
+    opacity:.6;
+    cursor:wait;
+}
+
+.upload {
+    border:2px dashed #83cfc4;
+    background:linear-gradient(130deg,#f0fbf8,#f3f6ff);
+    padding:28px;
+    border-radius:15px;
+    text-align:center;
+}
+
+input[type=file] {
+    margin:18px auto;
+    max-width:100%;
+}
+
+.preview {
+    display:none;
+    max-width:min(100%,390px);
+    max-height:300px;
+    object-fit:contain;
+    border-radius:12px;
+    margin:15px auto;
+}
+
+.status {
+    margin-top:12px;
+    color:#526b7c;
+    font-size:14px;
+    min-height:22px;
+}
+
+.result-grid {
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:12px;
+    margin-top:18px;
+}
+
+.result {
+    background:#f6f9fc;
+    border:1px solid var(--line);
+    padding:13px;
+    border-radius:10px;
+}
+
+.result span {
+    display:block;
+    color:var(--muted);
+    font-size:12px;
+    margin-bottom:5px;
+}
+
+.result strong {
+    font-size:15px;
+    overflow-wrap:anywhere;
+}
+
+.metric {
+    margin:18px 0;
+}
+
+.metric-head {
+    display:flex;
+    justify-content:space-between;
+    gap:12px;
+    font-size:14px;
+    font-weight:650;
+    margin-bottom:8px;
+}
+
+.track {
+    height:11px;
+    background:#e9eff5;
+    border-radius:20px;
+    overflow:hidden;
+}
+
+.bar {
+    height:100%;
+    background:linear-gradient(90deg,#247e91,#4bc9ad);
+    border-radius:20px;
+}
+
+.note {
+    background:#f1f8fa;
+    border-left:4px solid #29969b;
+    padding:14px;
+    border-radius:8px;
+    color:#526b7c;
+    font-size:13px;
+    line-height:1.6;
+    margin-top:16px;
+}
+
+.table-wrap {
+    overflow-x:auto;
+    margin-top:15px;
+}
+
+table {
+    width:100%;
+    border-collapse:collapse;
+    min-width:650px;
+    text-align:left;
+}
+
+th,td {
+    padding:12px;
+    border-bottom:1px solid var(--line);
+    font-size:13px;
+}
+
+th {
+    background:#f3f8fa;
+    color:#536b7f;
+}
+
+td {
+    color:#536579;
+}
+
+.footer {
+    text-align:center;
+    color:#8999a9;
+    font-size:12px;
+    padding:28px 10px;
+}
+
+@media(max-width:950px) {
+    .sidebar {width:205px}
+    .main {margin-left:205px;padding:20px}
+    .cards {grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+
+@media(max-width:650px) {
+    .sidebar {
+        position:static;
+        width:100%;
+        height:auto;
+        padding:15px;
+    }
+
+    .brand-sub {margin-bottom:12px}
+
+    .nav-btn {
+        display:inline-block;
+        width:auto;
+        padding:10px;
+        margin:3px;
+        font-size:12px;
+    }
+
+    .main {
+        margin:0;
+        padding:14px;
+    }
+
+    .topbar {
+        align-items:flex-start;
+        gap:12px;
+        flex-direction:column;
+    }
+
+    .cards,
+    .feature-list,
+    .result-grid {
+        grid-template-columns:1fr;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<aside class="sidebar">
+    <div class="brand">✦ DermAI</div>
+    <div class="brand-sub">INTELLIGENT SKIN IMAGE RESEARCH</div>
+
+    <button class="nav-btn active" data-page="overview">▦ &nbsp; Overview</button>
+    <button class="nav-btn" data-page="analysis">◈ &nbsp; Image Analysis</button>
+    <button class="nav-btn" data-page="performance">▤ &nbsp; Model Performance</button>
+    <button class="nav-btn" data-page="reports">▣ &nbsp; Reports & History</button>
+</aside>
+
+<main class="main">
+
+<header class="topbar">
+    <div>
+        <h1 id="pageTitle">Overview</h1>
+        <p class="welcome">Welcome back, Monisha L — DermAI workspace</p>
+    </div>
+
+    <div class="user-menu">
+        <button class="user-button" onclick="toggleUserMenu()">👤 Monisha L ▾</button>
+
+        <div class="dropdown" id="userDropdown">
+            <strong>Monisha L</strong>
+            <small>DermAI Administrator</small>
+            <button class="logout" onclick="logoutUser()">↪ &nbsp; Clear local session</button>
+        </div>
+    </div>
+</header>
+
+<!-- OVERVIEW -->
+
+<section id="overview" class="section active">
+
+    <h2>Welcome to DermAI ✨</h2>
+    <p class="subtitle">An experimental skin-image analysis and deep-learning research dashboard.</p>
+
+    <div class="cards">
+
+        <div class="card">
+            <div class="icon">🖼️</div>
+            <h3>Images analyzed this session</h3>
+            <strong id="imageCount">0</strong>
+        </div>
+
+        <div class="card">
+            <div class="icon">🎯</div>
+            <h3>Ensemble evaluation accuracy</h3>
+            <strong>69.58%</strong>
+        </div>
+
+        <div class="card">
+            <div class="icon">📊</div>
+            <h3>Available model reports</h3>
+            <strong id="reportCount">6</strong>
+        </div>
+
+    </div>
+
+    <div class="panel">
+        <h2>About DermAI</h2>
+
+        <p>
+            DermAI combines image quality checks, preprocessing, lesion-region
+            proposal, deep-learning classification, model comparison, ensemble
+            learning, confidence estimation and Grad-CAM explainability.
+        </p>
+
+        <div class="feature-list">
+            <div class="feature">01 · Image quality assessment</div>
+            <div class="feature">02 · Image preprocessing</div>
+            <div class="feature">03 · CNN and transfer learning</div>
+            <div class="feature">04 · Vision Transformer</div>
+            <div class="feature">05 · Ensemble prediction</div>
+            <div class="feature">06 · Grad-CAM explainability</div>
+            <div class="feature">07 · Confidence estimation</div>
+            <div class="feature">08 · Prediction history</div>
+        </div>
+    </div>
+
+    <div class="note">
+        <b>Research notice:</b> DermAI is an educational prototype.
+        Model outputs are experimental, are not a medical diagnosis,
+        and must not be used to make healthcare decisions.
+    </div>
+
+</section>
+
+<!-- IMAGE ANALYSIS -->
+
+<section id="analysis" class="section">
+
+    <h2>Image Analysis</h2>
+    <p class="subtitle">Choose an image and send it to the connected FastAPI analysis endpoint.</p>
+
+    <div class="panel">
+
+        <div class="upload">
+
+            <h2>🧬 Upload an image</h2>
+
+            <p>Select a JPG, PNG or other supported image (maximum 12 MB).</p>
+
+            <input type="file" id="imageInput" accept="image/*">
+
+            <img id="preview" class="preview" alt="Selected image preview">
+
+            <button class="btn" id="processButton" onclick="analyzeImage()">
+                Analyze Image
+            </button>
+
+            <p class="status" id="analysisStatus" aria-live="polite">
+                No image selected.
+            </p>
+
+        </div>
+
+        <div class="panel">
+            <h2>Image details & prediction</h2>
+            <div id="imageDetails">
+                <p>Image information and model output will appear here after analysis.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="note">
+        The prediction class and model score are outputs of an experimental model.
+        They do not confirm or rule out any condition.
+    </div>
+
+</section>
+<!-- MODEL PERFORMANCE -->
+
+<section id="performance" class="section">
+
+    <h2>Model Performance</h2>
+    <p class="subtitle">Evaluation metrics loaded from your existing /api/metrics endpoint.</p>
+
+    <div class="cards">
+
+        <div class="card">
+            <div class="icon">🎯</div>
+            <h3>Ensemble accuracy</h3>
+            <strong>69.58%</strong>
+        </div>
+
+        <div class="card">
+            <div class="icon">📈</div>
+            <h3>Ensemble precision</h3>
+            <strong>55.69%</strong>
+        </div>
+
+        <div class="card">
+            <div class="icon">🔍</div>
+            <h3>Ensemble recall</h3>
+            <strong>69.58%</strong>
+        </div>
+
+        <div class="card">
+            <div class="icon">⭐</div>
+            <h3>Ensemble weighted F1</h3>
+            <strong>60.44%</strong>
+        </div>
+
+    </div>
+
+    <div class="panel">
+
+        <h2>Six-model comparison · Weighted F1</h2>
+
+        <div id="modelComparison">
+            <p>Loading model results...</p>
+        </div>
+
+        <div class="note" id="comparisonNote">
+            Evaluation note will appear here.
+        </div>
+
+    </div>
+
+    <div class="panel">
+        <h2>🧠 Grad-CAM Explainability Visualizations</h2>
+
+        <p>
+            These experimental heatmaps highlight image regions that influenced
+            the model response. They are not proof of a lesion boundary and are
+            not a clinical explanation.
+        </p>
+
+        <div class="feature-list">
+            <div class="feature">
+                <h3>ResNet18 Grad-CAM</h3>
+                <img src="/static/resnet18_gradcam.png"
+                     alt="ResNet18 Grad-CAM visualization"
+                     style="width:100%; margin-top:12px; border-radius:12px; display:block;"
+                     onerror="this.alt='ResNet18 Grad-CAM image not found in web_app/static'; this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <p style="display:none; margin-top:8px;">Image not found. Check that resnet18_gradcam.png is inside web_app/static.</p>
+            </div>
+
+            <div class="feature">
+                <h3>MobileNetV3-Small Grad-CAM</h3>
+                <img src="/static/mobilenetv3_small_gradcam.png"
+                     alt="MobileNetV3-Small Grad-CAM visualization"
+                     style="width:100%; margin-top:12px; border-radius:12px; display:block;"
+                     onerror="this.alt='MobileNetV3 Grad-CAM image not found in web_app/static'; this.style.display='none'; this.nextElementSibling.style.display='block';">
+                <p style="display:none; margin-top:8px;">Image not found. Check that mobilenetv3_small_gradcam.png is inside web_app/static.</p>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="note">
+        The ensemble evaluation was performed on a 240-image test subset.
+        Different models may have used different splits or sample sizes,
+        so the displayed scores are not a controlled head-to-head comparison.
+    </div>
+
+</section>
+
+<!-- REPORTS AND HISTORY -->
+
+<section id="reports" class="section">
+
+    <h2>Reports & Prediction History</h2>
+    <p class="subtitle">Download the project summary and review saved analysis records.</p>
+
+    <div class="panel">
+
+        <h2>📄 DermAI project report</h2>
+
+        <p>
+            Includes project modules, recorded ensemble metrics,
+            model comparison and research limitations.
+        </p>
+
+        <button class="btn" onclick="downloadReport()">
+            Download Project Report (.txt)
+        </button>
+
+    </div>
+
+    <div class="panel">
+
+        <h2>🖼️ Saved prediction history</h2>
+
+        <p>Records are retrieved from the backend's /api/history endpoint.</p>
+
+        <div class="table-wrap">
+
+            <table>
+
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Date & Time</th>
+                        <th>Prediction</th>
+                        <th>Confidence</th>
+                        <th>Quality</th>
+                    </tr>
+                </thead>
+
+                <tbody id="historyTableBody">
+                    <tr>
+                        <td colspan="5">Loading prediction history...</td>
+                    </tr>
+                </tbody>
+
+            </table>
+
+        </div>
+
+        <button class="btn" onclick="loadPredictionHistory()">
+            Refresh History
+        </button>
+
+    </div>
+
+</section>
+
+<div class="footer">
+    DermAI © 2026 · Educational Research Prototype · Not for Medical Diagnosis
+</div>
+
+</main>
+
+<script>
+
+"use strict";
+
+/* PAGE NAVIGATION */
+
+const pageTitles = {
+    overview: "Overview",
+    analysis: "Image Analysis",
+    performance: "Model Performance",
+    reports: "Reports & History"
+};
+
+document.querySelectorAll(".nav-btn").forEach(button => {
+
+    button.addEventListener("click", () => {
+
+        document.querySelectorAll(".nav-btn").forEach(x =>
+            x.classList.remove("active")
+        );
+
+        document.querySelectorAll(".section").forEach(x =>
+            x.classList.remove("active")
+        );
+
+        button.classList.add("active");
+
+        const page = button.dataset.page;
+
+        document.getElementById(page).classList.add("active");
+
+        document.getElementById("pageTitle").textContent =
+            pageTitles[page];
+
+        document.getElementById("userDropdown").classList.remove("show");
+
+        if (page === "performance") {
+            loadModelPerformance();
+        }
+
+        if (page === "reports") {
+            loadPredictionHistory();
+        }
+
+    });
+
+});
+
+
+/* USER MENU */
+
+function toggleUserMenu() {
+    document.getElementById("userDropdown").classList.toggle("show");
+}
+
+document.addEventListener("click", event => {
+
+    if (!event.target.closest(".user-menu")) {
+        document.getElementById("userDropdown").classList.remove("show");
+    }
+
+});
+
+function logoutUser() {
+
+    if (confirm("Clear local session information?")) {
+
+        localStorage.removeItem("token");
+        sessionStorage.clear();
+
+        alert("Local session information cleared.");
+
+    }
+
+}
+
+
+/* IMAGE UPLOAD */
+
+const imageInput = document.getElementById("imageInput");
+const preview = document.getElementById("preview");
+
+let currentFile = null;
+let currentImageURL = null;
+let uploadedImages = 0;
+
+imageInput.addEventListener("change", () => {
+
+    const file = imageInput.files && imageInput.files[0];
+
+    if (!file) return;
+
+    if (!file.type.startsWith("image/")) {
+
+        alert("Please select a valid image file.");
+
+        imageInput.value = "";
+
+        return;
+    }
+
+    if (file.size > 12 * 1024 * 1024) {
+
+        alert("Please select an image smaller than 12 MB.");
+
+        imageInput.value = "";
+
+        return;
+    }
+
+    if (currentImageURL) {
+        URL.revokeObjectURL(currentImageURL);
+    }
+
+    currentFile = file;
+
+    currentImageURL = URL.createObjectURL(file);
+
+    preview.src = currentImageURL;
+
+    preview.style.display = "block";
+
+    document.getElementById("analysisStatus").textContent =
+        "Image selected. Ready for analysis.";
+
+    document.getElementById("imageDetails").textContent =
+        `${file.name} · ${(file.size / 1024).toFixed(1)} KB`;
+
+});
+
+
+/* IMAGE ANALYSIS */
+
+async function analyzeImage() {
+
+    if (!currentFile) {
+
+        alert("Please choose an image first.");
+
+        return;
+    }
+
+    const button = document.getElementById("processButton");
+
+    const status = document.getElementById("analysisStatus");
+
+    const details = document.getElementById("imageDetails");
+
+    button.disabled = true;
+
+    button.textContent = "Processing...";
+
+    status.textContent = "Sending image to DermAI. Please wait...";
+
+    try {
+
+        const form = new FormData();
+
+        form.append("file", currentFile);
+
+        const response = await fetch("/api/analyze", {
+            method: "POST",
+            body: form
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+
+            throw new Error(
+                data.detail || data.error || "Image analysis failed."
+            );
+
+        }
+
+        if (data.processed) {
+
+            preview.src = data.processed;
+
+            preview.style.display = "block";
+
+        }
+
+        details.replaceChildren();
+
+        const rows = [
+
+            ["Image dimensions", data.dimensions],
+
+            ["Brightness", data.brightness],
+
+            ["Image quality", data.quality],
+
+            ["Predicted class", data.prediction && data.prediction.class],
+
+            [
+                "Model score",
+                data.prediction && data.prediction.confidence != null
+                    ? Number(data.prediction.confidence).toFixed(2) + "%"
+                    : null
+            ],
+
+            [
+                "Risk assessment",
+                "Not clinically determined — professional review required"
+            ]
+
+        ];
+
+        rows.forEach(([label, value]) => {
+
+            const box = document.createElement("div");
+
+            box.className = "result";
+
+            const name = document.createElement("span");
+
+            name.textContent = label;
+
+            const val = document.createElement("strong");
+
+            val.textContent =
+                value == null ? "Unavailable" : String(value);
+
+            box.append(name, val);
+
+            details.append(box);
+
+        });
+
+        details.className = "result-grid";
+
+        uploadedImages++;
+
+        document.getElementById("imageCount").textContent =
+            uploadedImages;
+
+        status.textContent =
+            data.notice || "Analysis completed. Check the saved prediction history in Reports.";
+
+        loadPredictionHistory();
+
+    } catch (error) {
+
+        status.textContent = "Error: " + error.message;
+
+        console.error("Analysis error:", error);
+
+    } finally {
+
+        button.disabled = false;
+
+        button.textContent = "Analyze Image";
+
+    }
+
+}
+/* SAFE TEXT */
+
+function safeText(value) {
+
+    return String(value ?? "").replace(/[&<>"']/g, char => ({
+
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+
+    }[char]));
+
+}
+
+
+/* PREDICTION HISTORY */
+
+async function loadPredictionHistory() {
+
+    const tbody = document.getElementById("historyTableBody");
+
+    if (!tbody) return;
+
+    tbody.innerHTML =
+        '<tr><td colspan="5">Loading history...</td></tr>';
+
+    try {
+
+        const response = await fetch("/api/history");
+
+        if (!response.ok) {
+
+            throw new Error(
+                "History endpoint returned " + response.status
+            );
+
+        }
+
+        const data = await response.json();
+
+        const records = Array.isArray(data.records)
+            ? data.records
+            : [];
+
+        if (!records.length) {
+
+            tbody.innerHTML =
+                '<tr><td colspan="5">No saved predictions found.</td></tr>';
+
+            return;
+        }
+
+        tbody.innerHTML = records.map(record => `
+
+            <tr>
+
+                <td>${safeText(record.filename)}</td>
+
+                <td>${safeText(record.time)}</td>
+
+                <td>${safeText(record.prediction)}</td>
+
+                <td>
+                    ${
+                        record.confidence == null
+                            ? "Unavailable"
+                            : Number(record.confidence).toFixed(2) + "%"
+                    }
+                </td>
+
+                <td>${safeText(record.quality)}</td>
+
+            </tr>
+
+        `).join("");
+
+    } catch (error) {
+
+        tbody.innerHTML =
+            '<tr><td colspan="5">Could not load history. Check that the backend is running.</td></tr>';
+
+        console.error("History error:", error);
+
+    }
+
+}
+
+
+/* MODEL PERFORMANCE */
+
+async function loadModelPerformance() {
+
+    const container = document.getElementById("modelComparison");
+
+    const note = document.getElementById("comparisonNote");
+
+    container.innerHTML = "<p>Loading model results...</p>";
+
+    try {
+
+        const response = await fetch("/api/metrics");
+
+        if (!response.ok) {
+
+            throw new Error(
+                "Unable to load model metrics (HTTP " +
+                response.status + ")."
+            );
+
+        }
+
+        const data = await response.json();
+
+        container.replaceChildren();
+
+        const models = Array.isArray(data.models)
+            ? data.models
+            : [];
+
+        if (!models.length) {
+
+            container.textContent = "No model reports are available.";
+
+            return;
+        }
+
+        models.forEach(model => {
+
+            const score = Number(model.weighted_f1_percent);
+
+            if (!Number.isFinite(score)) return;
+
+            const wrap = document.createElement("div");
+
+            wrap.className = "metric";
+
+            const head = document.createElement("div");
+
+            head.className = "metric-head";
+
+            const name = document.createElement("span");
+
+            name.textContent = model.model || "Model";
+
+            const val = document.createElement("span");
+
+            val.textContent = score.toFixed(2) + "%";
+
+            head.append(name, val);
+
+            const track = document.createElement("div");
+
+            track.className = "track";
+
+            const bar = document.createElement("div");
+
+            bar.className = "bar";
+
+            bar.style.width =
+                Math.max(0, Math.min(100, score)) + "%";
+
+            track.append(bar);
+
+            wrap.append(head, track);
+
+            container.append(wrap);
+
+        });
+
+        note.textContent =
+            data.comparison_warning ||
+            "Scores may come from different evaluation samples or splits.";
+
+    } catch (error) {
+
+        container.textContent =
+            "Unable to load model results. Check the backend.";
+
+        note.textContent = error.message;
+
+        console.error("Metrics error:", error);
+
+    }
+
+}
+
+
+/* DOWNLOAD PROJECT REPORT */
+
+async function downloadReport() {
+
+    let modelLines = "Model metrics could not be loaded.";
+
+    try {
+
+        const response = await fetch("/api/metrics");
+
+        if (!response.ok) {
+            throw new Error("Metrics unavailable");
+        }
+
+        const data = await response.json();
+
+        modelLines = (data.models || []).map(model =>
+
+            `${model.model}: ${Number(model.weighted_f1_percent).toFixed(2)}% weighted F1`
+
+        ).join("\n");
+
+    } catch (error) {
+
+        console.error(error);
+
+    }
+
+    const report = `DERMAI PROJECT REPORT
+
+Project: DermAI
+Administrator: Monisha L
+
+PROJECT MODULES
+
+1. Image quality assessment and preprocessing
+2. Lesion-region proposal
+3. Baseline classification and transfer learning
+4. ResNet18 and MobileNetV3-Small comparison
+5. EfficientNet-B0
+6. Vision Transformer
+7. Ensemble learning
+8. Hyperparameter experiment
+9. Confidence estimation
+10. Grad-CAM explainability
+11. Prediction history and dashboard
+
+RECORDED ENSEMBLE EVALUATION
+
+Accuracy: 69.58%
+Precision: 55.69%
+Recall: 69.58%
+Weighted F1: 60.44%
+
+MODEL COMPARISON — WEIGHTED F1
+
+${modelLines}
+
+EVALUATION LIMITATION
+
+Model evaluation samples and splits may differ.
+Scores should not be interpreted as a controlled head-to-head comparison.
+Confidence values are not calibrated clinical probabilities.
+
+IMPORTANT NOTICE
+
+DermAI is an educational research prototype.
+Predictions are experimental and are not intended for diagnosis,
+treatment, or medical decision-making.
+`;
+
+    const blob = new Blob(
+        [report],
+        {type:"text/plain;charset=utf-8"}
+    );
+
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement("a");
+
+    link.href = url;
+
+    link.download = "DermAI_Project_Report.txt";
+
+    document.body.append(link);
+
+    link.click();
+
+    link.remove();
+
+    URL.revokeObjectURL(url);
+
+}
+
+
+/* INITIAL PAGE LOAD */
+
+loadModelPerformance();
+
+loadPredictionHistory();
+
+</script>
+
+</body>
+</html>

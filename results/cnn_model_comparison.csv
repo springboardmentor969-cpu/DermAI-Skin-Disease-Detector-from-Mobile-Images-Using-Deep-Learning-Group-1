@@ -1,0 +1,3 @@
+Model,Test_Accuracy
+ResNet18,0.6708333333333333
+MobileNetV3-Small,0.6

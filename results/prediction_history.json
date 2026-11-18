@@ -1,0 +1,200 @@
+[
+  {
+    "id": "20261117203315881985",
+    "time": "2026-11-17T20:33:15+05:30",
+    "filename": "ISIC_0024306.jpg",
+    "dimensions": "224 \u00d7 224",
+    "quality": "Passed basic checks",
+    "prediction": "nv",
+    "confidence": 25.8
+  },
+  {
+    "id": "20261117195306072458",
+    "time": "2026-11-17T19:53:06+05:30",
+    "filename": "ISIC_0024315.jpg",
+    "dimensions": "224 \u00d7 224",
+    "quality": "Passed basic checks",
+    "prediction": "nv",
+    "confidence": 24.69
+  },
+  {
+    "id": "20261116204621215552",
+    "time": "2026-11-16T20:46:21+05:30",
+    "filename": "ISIC_0024343.jpg",
+    "dimensions": "224 \u00d7 224",
+    "quality": "Passed basic checks",
+    "prediction": "mel",
+    "confidence": 31.42
+  },
+  {
+    "id": "20261116195449846484",
+    "time": "2026-11-16T19:54:49+05:30",
+    "filename": "ISIC_0024343.jpg",
+    "dimensions": "224 \u00d7 224",
+    "quality": "Passed basic checks",
+    "prediction": "mel",
+    "confidence": 31.42
+  },
+  {
+    "id": "20261115215654827601",
+    "time": "2026-11-15T21:56:54+05:30",
+    "filename": "ISIC_0024339.jpg",
+    "dimensions": "224 \u00d7 224",
+    "quality": "Passed basic checks",
+    "prediction": "nv",
+    "confidence": 47.8
+  },
+  {
+    "id": "20261115204923087058",
+    "time": "2026-11-15T20:49:23+05:30",
+    "filename": "ISIC_0024361.jpg",
+    "dimensions": "224 \u00d7 224",
+    "quality": "Passed basic checks",
+    "prediction": "akiec",
+    "confidence": 17.18
+  },
+  {
+    "id": "20261115204816512227",
+    "time": "2026-11-15T20:48:16+05:30",
+    "filename": "ISIC_0024368.jpg",
+    "dimensions": "224 \u00d7 224",
+    "quality": "Passed basic checks",
+    "prediction": "nv",
+    "confidence": 42.93
+  },
+  {
+    "id": "20261115204436648186",
+    "time": "2026-11-15T20:44:36+05:30",
+    "filename": "ISIC_0024314.jpg",
+    "dimensions": "224 \u00d7 224",
+    "quality": "Passed basic checks",
+    "prediction": "nv",
+    "confidence": 25.73
+  },
+  {
+    "id": "20261115202707207296",
+    "time": "2026-11-15T20:27:07+05:30",
+    "filename": "ISIC_0029313.jpg",
+    "dimensions": "600 \u00d7 450",
+    "quality": "Passed basic checks",
+    "prediction": "mel",
+    "confidence": 19.89
+  },
+  {
+    "id": "20261114215351008018",
+    "time": "2026-11-14T21:53:51+05:30",
+    "filename": "ISIC_0029372.jpg",
+    "dimensions": "600 \u00d7 450",
+    "quality": "Passed basic checks",
+    "prediction": "mel",
+    "confidence": 29.78
+  },
+  {
+    "id": "20261110200244181071",
+    "time": "2026-11-10T20:02:44+05:30",
+    "filename": "ISIC_0029314.jpg",
+    "dimensions": "600 \u00d7 450",
+    "quality": "Passed basic checks",
+    "prediction": "nv",
+    "confidence": 22.55
+  },
+  {
+    "id": "20261109111354690472",
+    "time": "2026-11-09T11:13:54+05:30",
+    "filename": "ISIC_0024313.jpg",
+    "dimensions": "600 \u00d7 450",
+    "quality": "Passed basic checks",
+    "prediction": "nv",
+    "confidence": 30.76
+  },
+  {
+    "id": "20261107094316281726",
+    "time": "2026-11-07T09:43:16+05:30",
+    "filename": "ISIC_0024306.jpg",
+    "dimensions": "600 \u00d7 450",
+    "quality": "Passed basic checks",
+    "prediction": "akiec",
+    "confidence": 19.22
+  },
+  {
+    "id": "20261106175008101306",
+    "time": "2026-11-06T17:50:08+05:30",
+    "filename": "ISIC_0024306.jpg",
+    "dimensions": "600 \u00d7 450",
+    "quality": "Passed basic checks",
+    "prediction": "akiec",
+    "confidence": 19.22
+  },
+  {
+    "id": "20261106174916127300",
+    "time": "2026-11-06T17:49:16+05:30",
+    "filename": "ISIC_0024368.jpg",
+    "dimensions": "600 \u00d7 450",
+    "quality": "Passed basic checks",
+    "prediction": "nv",
+    "confidence": 42.7
+  },
+  {
+    "id": "20261106174850584321",
+    "time": "2026-11-06T17:48:50+05:30",
+    "filename": "ISIC_0024313.jpg",
+    "dimensions": "600 \u00d7 450",
+    "quality": "Passed basic checks",
+    "prediction": "nv",
+    "confidence": 30.76
+  },
+  {
+    "id": "20261106174826925462",
+    "time": "2026-11-06T17:48:26+05:30",
+    "filename": "ISIC_0024355.jpg",
+    "dimensions": "600 \u00d7 450",
+    "quality": "Passed basic checks",
+    "prediction": "mel",
+    "confidence": 25.68
+  },
+  {
+    "id": "20261106174714543623",
+    "time": "2026-11-06T17:47:14+05:30",
+    "filename": "ISIC_0024315.jpg",
+    "dimensions": "600 \u00d7 450",
+    "quality": "Passed basic checks",
+    "prediction": "nv",
+    "confidence": 33.66
+  },
+  {
+    "id": "20261106174418183154",
+    "time": "2026-11-06T17:44:18+05:30",
+    "filename": "ISIC_0024349.jpg",
+    "dimensions": "600 \u00d7 450",
+    "quality": "Passed basic checks",
+    "prediction": "mel",
+    "confidence": 36.08
+  },
+  {
+    "id": "20261106174215758500",
+    "time": "2026-11-06T17:42:15+05:30",
+    "filename": "ISIC_0024306.jpg",
+    "dimensions": "600 \u00d7 450",
+    "quality": "Passed basic checks",
+    "prediction": "akiec",
+    "confidence": 19.22
+  },
+  {
+    "id": "20261106140754699792",
+    "time": "2026-11-06T14:07:54+05:30",
+    "filename": "ISIC_0024368.jpg",
+    "dimensions": "600 \u00d7 450",
+    "quality": "Passed basic checks",
+    "prediction": "nv",
+    "confidence": 42.7
+  },
+  {
+    "id": "20261106140752303956",
+    "time": "2026-11-06T14:07:52+05:30",
+    "filename": "ISIC_0024368.jpg",
+    "dimensions": "600 \u00d7 450",
+    "quality": "Passed basic checks",
+    "prediction": "nv",
+    "confidence": 42.7
+  }
+]

@@ -1,0 +1,13 @@
+# Large dataset images
+dataset/images/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Virtual environments
+venv/
+.venv/
+
+# Temporary files
+*.log
