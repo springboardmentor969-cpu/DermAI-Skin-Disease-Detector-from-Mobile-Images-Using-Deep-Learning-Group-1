@@ -1,0 +1,14 @@
+{
+  "id": "sivavidhyap/dermai-train",
+  "title": "dermai-train",
+  "code_file": "02_train_kaggle.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": true,
+  "enable_gpu": true,
+  "enable_internet": true,
+  "dataset_sources": [
+    "kmader/skin-cancer-mnist-ham10000",
+    "sivavidhyap/dermai-code"
+  ]
+}

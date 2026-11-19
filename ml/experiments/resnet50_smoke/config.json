@@ -1,0 +1,28 @@
+{
+  "model": "resnet50",
+  "epochs": 2,
+  "freeze_epochs": 1,
+  "batch_size": 16,
+  "lr": 0.0003,
+  "lr_fine_tune": 3e-05,
+  "weight_decay": 0.01,
+  "loss": "ce_weighted",
+  "scheduler": "cosine",
+  "patience": 7,
+  "min_delta": 0.0001,
+  "splits_csv": "ml/data/splits.csv",
+  "images_root": [
+    "ml/data/raw/images"
+  ],
+  "output_dir": "ml/experiments/resnet50_smoke",
+  "subset": 200,
+  "num_workers": 0,
+  "use_sampler": false,
+  "device": "auto",
+  "resume": null,
+  "seed": 42,
+  "no_pretrained": false,
+  "eval_test": false,
+  "device_actual": "cpu",
+  "amp_enabled": false
+}

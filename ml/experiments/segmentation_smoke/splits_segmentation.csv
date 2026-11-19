@@ -1,0 +1,17 @@
+image_id,split,image_path,mask_path
+ISIC_0024386,train,C:\Users\2005s\Downloads\DermAI\ml\data\isic2018_task1\images\ISIC_0024386.jpg,C:\Users\2005s\Downloads\DermAI\ml\data\isic2018_task1\masks\ISIC_0024386_segmentation.png
+ISIC_0024838,train,C:\Users\2005s\Downloads\DermAI\ml\data\isic2018_task1\images\ISIC_0024838.jpg,C:\Users\2005s\Downloads\DermAI\ml\data\isic2018_task1\masks\ISIC_0024838_segmentation.png
+ISIC_0025661,train,C:\Users\2005s\Downloads\DermAI\ml\data\isic2018_task1\images\ISIC_0025661.jpg,C:\Users\2005s\Downloads\DermAI\ml\data\isic2018_task1\masks\ISIC_0025661_segmentation.png
+ISIC_0032377,train,C:\Users\2005s\Downloads\DermAI\ml\data\isic2018_task1\images\ISIC_0032377.jpg,C:\Users\2005s\Downloads\DermAI\ml\data\isic2018_task1\masks\ISIC_0032377_segmentation.png
+ISIC_0031562,train,C:\Users\2005s\Downloads\DermAI\ml\data\isic2018_task1\images\ISIC_0031562.jpg,C:\Users\2005s\Downloads\DermAI\ml\data\isic2018_task1\masks\ISIC_0031562_segmentation.png
+ISIC_0030959,train,C:\Users\2005s\Downloads\DermAI\ml\data\isic2018_task1\images\ISIC_0030959.jpg,C:\Users\2005s\Downloads\DermAI\ml\data\isic2018_task1\masks\ISIC_0030959_segmentation.png
+ISIC_0027371,train,C:\Users\2005s\Downloads\DermAI\ml\data\isic2018_task1\images\ISIC_0027371.jpg,C:\Users\2005s\Downloads\DermAI\ml\data\isic2018_task1\masks\ISIC_0027371_segmentation.png
+ISIC_0028405,train,C:\Users\2005s\Downloads\DermAI\ml\data\isic2018_task1\images\ISIC_0028405.jpg,C:\Users\2005s\Downloads\DermAI\ml\data\isic2018_task1\masks\ISIC_0028405_segmentation.png
+ISIC_0025071,train,C:\Users\2005s\Downloads\DermAI\ml\data\isic2018_task1\images\ISIC_0025071.jpg,C:\Users\2005s\Downloads\DermAI\ml\data\isic2018_task1\masks\ISIC_0025071_segmentation.png
+ISIC_0032434,train,C:\Users\2005s\Downloads\DermAI\ml\data\isic2018_task1\images\ISIC_0032434.jpg,C:\Users\2005s\Downloads\DermAI\ml\data\isic2018_task1\masks\ISIC_0032434_segmentation.png
+ISIC_0025553,train,C:\Users\2005s\Downloads\DermAI\ml\data\isic2018_task1\images\ISIC_0025553.jpg,C:\Users\2005s\Downloads\DermAI\ml\data\isic2018_task1\masks\ISIC_0025553_segmentation.png
+ISIC_0026616,train,C:\Users\2005s\Downloads\DermAI\ml\data\isic2018_task1\images\ISIC_0026616.jpg,C:\Users\2005s\Downloads\DermAI\ml\data\isic2018_task1\masks\ISIC_0026616_segmentation.png
+ISIC_0030347,train,C:\Users\2005s\Downloads\DermAI\ml\data\isic2018_task1\images\ISIC_0030347.jpg,C:\Users\2005s\Downloads\DermAI\ml\data\isic2018_task1\masks\ISIC_0030347_segmentation.png
+ISIC_0031274,val,C:\Users\2005s\Downloads\DermAI\ml\data\isic2018_task1\images\ISIC_0031274.jpg,C:\Users\2005s\Downloads\DermAI\ml\data\isic2018_task1\masks\ISIC_0031274_segmentation.png
+ISIC_0025396,val,C:\Users\2005s\Downloads\DermAI\ml\data\isic2018_task1\images\ISIC_0025396.jpg,C:\Users\2005s\Downloads\DermAI\ml\data\isic2018_task1\masks\ISIC_0025396_segmentation.png
+ISIC_0026474,test,C:\Users\2005s\Downloads\DermAI\ml\data\isic2018_task1\images\ISIC_0026474.jpg,C:\Users\2005s\Downloads\DermAI\ml\data\isic2018_task1\masks\ISIC_0026474_segmentation.png

@@ -1,0 +1,3 @@
+epoch,stage,lr,train_loss,val_loss,val_acc,val_macro_f1,val_balanced_acc,time_sec
+1,Head,1e-06,1.95197,1.92489,0.455,0.13377,0.18904,63.32
+2,Full,1e-06,1.92949,1.90185,0.41,0.12354,0.1521,97.14

@@ -1,0 +1,25 @@
+{
+  "model": "swin_tiny_patch4_window7_224",
+  "best_epoch": 18,
+  "val": {
+    "loss": 1.621,
+    "accuracy": 0.542,
+    "macro_f1": 0.1652,
+    "balanced_accuracy": 0.224,
+    "ece": 0.082,
+    "classification_report": {
+      "mel": {
+        "precision": 0.18,
+        "recall": 0.21,
+        "f1-score": 0.19,
+        "support": 22.0
+      },
+      "nv": {
+        "precision": 0.74,
+        "recall": 0.71,
+        "f1-score": 0.72,
+        "support": 136.0
+      }
+    }
+  }
+}

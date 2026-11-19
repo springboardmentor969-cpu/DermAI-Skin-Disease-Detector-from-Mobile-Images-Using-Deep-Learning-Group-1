@@ -1,0 +1,54 @@
+services:
+  # ----------------------------------------------------------------------------
+  # PostgreSQL Database Service
+  # Stores user profiles, authentication data, cases, and metadata.
+  # ----------------------------------------------------------------------------
+  postgres:
+    image: postgres:16-alpine
+    container_name: dermai-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-dermai_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dermai_password}
+      POSTGRES_DB: ${POSTGRES_DB:-dermai_db}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-dermai_user} -d ${POSTGRES_DB:-dermai_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  # ----------------------------------------------------------------------------
+  # MinIO Object Storage Service (S3-Compatible)
+  # Stores uploaded skin lesion images securely.
+  # ----------------------------------------------------------------------------
+  minio:
+    image: pgsty/silo:RELEASE.2026-09-16T00-00-00Z
+    container_name: dermai-minio
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+    ports:
+      - "${MINIO_PORT:-9000}:9000"        # S3 API endpoint
+      - "${MINIO_CONSOLE_PORT:-9001}:9001" # Web console interface
+    volumes:
+      - minio_data:/data
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+# ------------------------------------------------------------------------------
+# Persistent Named Volumes
+# ------------------------------------------------------------------------------
+volumes:
+  postgres_data:
+    name: dermai_postgres_data
+  minio_data:
+    name: dermai_minio_data

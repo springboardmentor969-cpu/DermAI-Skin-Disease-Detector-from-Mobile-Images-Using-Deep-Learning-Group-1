@@ -1,0 +1,3 @@
+model_name,val_accuracy,val_macro_f1,val_balanced_accuracy,melanoma_recall,ece
+swin_tiny_patch4_window7_224,0.542,0.1652,0.224,0.21,0.082
+resnet50,0.455,0.13377,0.18904,0.09090909090909091,
