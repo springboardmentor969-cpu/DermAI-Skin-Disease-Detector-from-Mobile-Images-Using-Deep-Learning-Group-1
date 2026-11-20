@@ -1,1 +1,0 @@
-# DermAI Services

@@ -1,0 +1,24 @@
+{
+  "dataset": "ISBI 2016 ISIC Part 1",
+  "dataset_url": "https://challenge.isic-archive.com/2016/",
+  "pair_count": 900,
+  "split_counts": {
+    "train": 630,
+    "validation": 90,
+    "test": 180
+  },
+  "seed": 42,
+  "device": "cpu",
+  "evaluation_only": true,
+  "checkpoint": "unet.pth",
+  "selected_model": "unet",
+  "models": {
+    "unet": {
+      "weights": "unet.pth",
+      "validation_dice": 0.8323696653048197,
+      "validation_iou": 0.7138924400011698,
+      "test_dice": 0.8069945275783539,
+      "test_iou": 0.6776496271292368
+    }
+  }
+}

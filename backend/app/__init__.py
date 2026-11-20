@@ -1,1 +1,1 @@
-# DermAI FastAPI Backend Package
+"""DermAI backend package."""

@@ -1,0 +1,5 @@
+{
+  "architecture": "unet",
+  "weights": "unet.pth",
+  "selection_metric": "validation Dice score"
+}

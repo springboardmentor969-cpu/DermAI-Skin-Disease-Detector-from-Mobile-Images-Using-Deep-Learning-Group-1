@@ -1,0 +1,129 @@
+{
+  "architecture": "mobilenet_v2",
+  "checkpoint": "C:\\Users\\varad\\Downloads\\DermAI\\backend\\artifacts\\models\\mobilenet_mild_weighting\\mobilenet_v2.pth",
+  "split_manifest": "C:\\Users\\varad\\Downloads\\DermAI\\reports\\milestone2_run_20261102_v2\\split_manifest.csv",
+  "test_loss": 0.6216880068878431,
+  "test_metrics": {
+    "accuracy": 0.7696127110228401,
+    "macro_avg": {
+      "precision": 0.5541466329085988,
+      "recall": 0.5882507956728361,
+      "f1_score": 0.5646355880907579
+    },
+    "weighted_avg": {
+      "precision": 0.7776794580157921,
+      "recall": 0.7696127110228401,
+      "f1_score": 0.7717789997102157
+    },
+    "per_class": {
+      "akiec": {
+        "precision": 0.40869565217391307,
+        "recall": 0.6911764705882353,
+        "f1_score": 0.5136612021857924,
+        "support": 68
+      },
+      "bcc": {
+        "precision": 0.5,
+        "recall": 0.61,
+        "f1_score": 0.5495495495495496,
+        "support": 100
+      },
+      "bkl": {
+        "precision": 0.5927835051546392,
+        "recall": 0.5609756097560976,
+        "f1_score": 0.5764411027568922,
+        "support": 205
+      },
+      "df": {
+        "precision": 0.34782608695652173,
+        "recall": 0.36363636363636365,
+        "f1_score": 0.3555555555555555,
+        "support": 22
+      },
+      "mel": {
+        "precision": 0.48186528497409326,
+        "recall": 0.4189189189189189,
+        "f1_score": 0.4481927710843373,
+        "support": 222
+      },
+      "nv": {
+        "precision": 0.9026946107784432,
+        "recall": 0.8848129126925899,
+        "f1_score": 0.8936643201185624,
+        "support": 1363
+      },
+      "vasc": {
+        "precision": 0.6451612903225806,
+        "recall": 0.5882352941176471,
+        "f1_score": 0.6153846153846154,
+        "support": 34
+      }
+    },
+    "confusion_matrix": [
+      [
+        47,
+        7,
+        8,
+        2,
+        2,
+        2,
+        0
+      ],
+      [
+        14,
+        61,
+        4,
+        3,
+        5,
+        13,
+        0
+      ],
+      [
+        21,
+        17,
+        115,
+        1,
+        21,
+        30,
+        0
+      ],
+      [
+        5,
+        1,
+        2,
+        8,
+        3,
+        3,
+        0
+      ],
+      [
+        13,
+        7,
+        29,
+        3,
+        93,
+        76,
+        1
+      ],
+      [
+        15,
+        24,
+        36,
+        6,
+        66,
+        1206,
+        10
+      ],
+      [
+        0,
+        5,
+        0,
+        0,
+        3,
+        6,
+        20
+      ]
+    ]
+  },
+  "selection_metric": "validation macro F1-score"
+}

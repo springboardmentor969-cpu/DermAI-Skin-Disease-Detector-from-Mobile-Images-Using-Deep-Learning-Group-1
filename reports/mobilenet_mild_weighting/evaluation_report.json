@@ -1,0 +1,337 @@
+{
+  "dataset": "HAM10000",
+  "image_count": 10015,
+  "class_names": [
+    "akiec",
+    "bcc",
+    "bkl",
+    "df",
+    "mel",
+    "nv",
+    "vasc"
+  ],
+  "seed": 42,
+  "split_method": "StratifiedGroupKFold: 20% held-out test fold, then 25% of the remaining 80% for validation (approximately 60/20/20); lesion_id and exact duplicate-image groups never cross splits.",
+  "split_counts": {
+    "train": 6007,
+    "validation": 1994,
+    "test": 2014
+  },
+  "class_counts_by_split": {
+    "train": {
+      "akiec": 197,
+      "bcc": 308,
+      "bkl": 687,
+      "df": 68,
+      "mel": 679,
+      "nv": 3983,
+      "vasc": 85
+    },
+    "validation": {
+      "akiec": 62,
+      "bcc": 106,
+      "bkl": 207,
+      "df": 25,
+      "mel": 212,
+      "nv": 1359,
+      "vasc": 23
+    },
+    "test": {
+      "akiec": 68,
+      "bcc": 100,
+      "bkl": 205,
+      "df": 22,
+      "mel": 222,
+      "nv": 1363,
+      "vasc": 34
+    }
+  },
+  "device": "cpu",
+  "pretrained_imagenet_weights": true,
+  "epochs": 10,
+  "batch_size": 8,
+  "early_stopping_patience": 4,
+  "early_stopping_min_delta": 0.0001,
+  "class_weights": {
+    "akiec": 1.1074646711349487,
+    "bcc": 0.8857020139694214,
+    "bkl": 0.5930408239364624,
+    "df": 1.884987711906433,
+    "mel": 0.5965242385864258,
+    "nv": 0.24629627168178558,
+    "vasc": 1.6859842538833618
+  },
+  "augmentation": [
+    "RandomResizedCrop(scale=0.85..1.0, ratio=0.9..1.1)",
+    "RandomHorizontalFlip",
+    "RandomVerticalFlip(p=0.15)",
+    "RandomRotation(20 degrees)",
+    "ColorJitter(brightness=0.15, contrast=0.15, saturation=0.1, hue=0.02)"
+  ],
+  "scheduler": "ReduceLROnPlateau(mode=max, factor=0.5, patience=1)",
+  "selection_metric": "validation macro F1-score",
+  "models": {
+    "mobilenet_v2": {
+      "weights": "mobilenet_v2.pth",
+      "validation_loss": 0.6188810971979362,
+      "validation_metrics": {
+        "accuracy": 0.7723169508525577,
+        "macro_avg": {
+          "precision": 0.5593265143789432,
+          "recall": 0.6543594657646874,
+          "f1_score": 0.595004595531587
+        },
+        "weighted_avg": {
+          "precision": 0.7798409661887935,
+          "recall": 0.7723169508525577,
+          "f1_score": 0.7735321629627145
+        },
+        "per_class": {
+          "akiec": {
+            "precision": 0.4044943820224719,
+            "recall": 0.5806451612903226,
+            "f1_score": 0.4768211920529802,
+            "support": 62
+          },
+          "bcc": {
+            "precision": 0.5310344827586206,
+            "recall": 0.7264150943396226,
+            "f1_score": 0.6135458167330676,
+            "support": 106
+          },
+          "bkl": {
+            "precision": 0.6444444444444445,
+            "recall": 0.5603864734299517,
+            "f1_score": 0.5994832041343668,
+            "support": 207
+          },
+          "df": {
+            "precision": 0.5428571428571428,
+            "recall": 0.76,
+            "f1_score": 0.6333333333333332,
+            "support": 25
+          },
+          "mel": {
+            "precision": 0.449438202247191,
+            "recall": 0.37735849056603776,
+            "f1_score": 0.4102564102564103,
+            "support": 212
+          },
+          "nv": {
+            "precision": 0.898572501878287,
+            "recall": 0.8800588668138337,
+            "f1_score": 0.8892193308550186,
+            "support": 1359
+          },
+          "vasc": {
+            "precision": 0.4444444444444444,
+            "recall": 0.6956521739130435,
+            "f1_score": 0.5423728813559322,
+            "support": 23
+          }
+        },
+        "confusion_matrix": [
+          [
+            36,
+            13,
+            5,
+            1,
+            2,
+            5,
+            0
+          ],
+          [
+            3,
+            77,
+            6,
+            3,
+            4,
+            11,
+            2
+          ],
+          [
+            14,
+            12,
+            116,
+            1,
+            13,
+            49,
+            2
+          ],
+          [
+            0,
+            0,
+            1,
+            19,
+            1,
+            4,
+            0
+          ],
+          [
+            28,
+            17,
+            18,
+            1,
+            80,
+            65,
+            3
+          ],
+          [
+            8,
+            24,
+            31,
+            10,
+            77,
+            1196,
+            13
+          ],
+          [
+            0,
+            2,
+            3,
+            0,
+            1,
+            1,
+            16
+          ]
+        ]
+      },
+      "test_loss": null,
+      "test_metrics": null,
+      "history": [
+        {
+          "epoch": 1,
+          "train_loss": 1.2845071502983698,
+          "train_accuracy": 0.6881971033793907,
+          "train_macro_f1": 0.2807891367171034,
+          "validation_loss": 0.8070646560748099,
+          "validation_accuracy": 0.7181544633901705,
+          "validation_macro_precision": 0.415544322923509,
+          "validation_macro_recall": 0.4137122678485761,
+          "validation_macro_f1": 0.41361971822109755,
+          "learning_rate": 0.0002
+        },
+        {
+          "epoch": 2,
+          "train_loss": 1.049002692845095,
+          "train_accuracy": 0.7273181288496754,
+          "train_macro_f1": 0.4593458351927026,
+          "validation_loss": 0.748916413399616,
+          "validation_accuracy": 0.7357071213640923,
+          "validation_macro_precision": 0.499374144678833,
+          "validation_macro_recall": 0.500557291266226,
+          "validation_macro_f1": 0.4570153891168744,
+          "learning_rate": 0.0002
+        },
+        {
+          "epoch": 3,
+          "train_loss": 0.9536023271526377,
+          "train_accuracy": 0.7418012318961212,
+          "train_macro_f1": 0.5220112848441679,
+          "validation_loss": 0.6736424519169474,
+          "validation_accuracy": 0.7612838515546639,
+          "validation_macro_precision": 0.5815836815387111,
+          "validation_macro_recall": 0.5767193140302522,
+          "validation_macro_f1": 0.5554430748831425,
+          "learning_rate": 0.0002
+        },
+        {
+          "epoch": 4,
+          "train_loss": 0.8711961708827722,
+          "train_accuracy": 0.7476277676044615,
+          "train_macro_f1": 0.5558685435705308,
+          "validation_loss": 0.6747437098354041,
+          "validation_accuracy": 0.753259779338014,
+          "validation_macro_precision": 0.5541998793530111,
+          "validation_macro_recall": 0.6138743784656301,
+          "validation_macro_f1": 0.563775912364816,
+          "learning_rate": 0.0002
+        },
+        {
+          "epoch": 5,
+          "train_loss": 0.8602744900527365,
+          "train_accuracy": 0.7564508073913767,
+          "train_macro_f1": 0.5552439307151483,
+          "validation_loss": 0.6352536777368819,
+          "validation_accuracy": 0.771815446339017,
+          "validation_macro_precision": 0.5615609501712749,
+          "validation_macro_recall": 0.5992937904802985,
+          "validation_macro_f1": 0.5752604822102251,
+          "learning_rate": 0.0002
+        },
+        {
+          "epoch": 6,
+          "train_loss": 0.8341421558671611,
+          "train_accuracy": 0.7572831696354253,
+          "train_macro_f1": 0.5716764163777709,
+          "validation_loss": 0.6146812501252296,
+          "validation_accuracy": 0.779839518555667,
+          "validation_macro_precision": 0.5755514710863319,
+          "validation_macro_recall": 0.5950199142106367,
+          "validation_macro_f1": 0.5776786108407725,
+          "learning_rate": 0.0002
+        },
+        {
+          "epoch": 7,
+          "train_loss": 0.7990982670126728,
+          "train_accuracy": 0.7659397369735309,
+          "train_macro_f1": 0.6054299615063472,
+          "validation_loss": 0.59629541603286,
+          "validation_accuracy": 0.7788365095285857,
+          "validation_macro_precision": 0.5862088800179289,
+          "validation_macro_recall": 0.5896447223506484,
+          "validation_macro_f1": 0.5829229032742891,
+          "learning_rate": 0.0002
+        },
+        {
+          "epoch": 8,
+          "train_loss": 0.806507512220075,
+          "train_accuracy": 0.7661062094223406,
+          "train_macro_f1": 0.5989323722993315,
+          "validation_loss": 0.6566675180128384,
+          "validation_accuracy": 0.7587763289869609,
+          "validation_macro_precision": 0.5134083669952842,
+          "validation_macro_recall": 0.6551899249518112,
+          "validation_macro_f1": 0.5503857521190517,
+          "learning_rate": 0.0002
+        },
+        {
+          "epoch": 9,
+          "train_loss": 0.7667648132616973,
+          "train_accuracy": 0.7699350757449642,
+          "train_macro_f1": 0.6207776527111888,
+          "validation_loss": 0.6169760540714385,
+          "validation_accuracy": 0.769307923771314,
+          "validation_macro_precision": 0.5516917323901466,
+          "validation_macro_recall": 0.6288771327673691,
+          "validation_macro_f1": 0.5679024771984319,
+          "learning_rate": 0.0001
+        },
+        {
+          "epoch": 10,
+          "train_loss": 0.7687684751715897,
+          "train_accuracy": 0.7757616114533045,
+          "train_macro_f1": 0.6230619723768073,
+          "validation_loss": 0.6188810971979362,
+          "validation_accuracy": 0.7723169508525577,
+          "validation_macro_precision": 0.5593265143789432,
+          "validation_macro_recall": 0.6543594657646874,
+          "validation_macro_f1": 0.595004595531587,
+          "learning_rate": 0.0001
+        }
+      ],
+      "best_epoch": 10,
+      "stopped_epoch": 10,
+      "early_stopped": false,
+      "overfitting_gap_at_best_epoch": 0.003444660600746774,
+      "hyperparameters": {
+        "learning_rate": 0.0002,
+        "weight_decay": 0.0001,
+        "optimizer": "AdamW"
+      }
+    }
+  },
+  "weighting": "mild",
+  "split_manifest": "C:\\Users\\varad\\Downloads\\DermAI\\reports\\milestone2_run_20261102_v2\\split_manifest.csv",
+  "selected_model": "mobilenet_v2"
+}

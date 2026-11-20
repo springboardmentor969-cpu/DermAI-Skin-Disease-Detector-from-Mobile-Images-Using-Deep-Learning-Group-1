@@ -1,49 +1,77 @@
-version: "3.9"
-
 services:
+  # 1. PostgreSQL Relational Database Service
   db:
-    image: postgres:15-alpine
-    container_name: dermai_postgres
-    restart: unless-stopped
+    image: postgres:16-alpine
+    container_name: dermai_db
     environment:
-      POSTGRES_USER: dermai_user
-      POSTGRES_PASSWORD: dermai_secure_password
-      POSTGRES_DB: dermai_db
-    ports:
-      - "5432:5432"
+      POSTGRES_USER: ${POSTGRES_USER:-dermai}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dermai_secure_password}
+      POSTGRES_DB: ${POSTGRES_DB:-dermai}
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./backend/schema.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-dermai} -d ${POSTGRES_DB:-dermai}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    networks:
+      - dermai_network
 
+  # 2. FastAPI Backend Service (Deep Learning Inference & API)
   backend:
     build:
       context: ./backend
       dockerfile: Dockerfile
     container_name: dermai_backend
-    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
     environment:
-      DATABASE_URL: postgresql://dermai_user:dermai_secure_password@db:5432/dermai_db
-      JWT_SECRET_KEY: super_secret_dermai_jwt_key_change_in_prod
-      CORS_ORIGINS: "*"
+      DATABASE_URL: postgresql://${POSTGRES_USER:-dermai}:${POSTGRES_PASSWORD:-dermai_secure_password}@db:5432/${POSTGRES_DB:-dermai}
+      SECRET_KEY: ${SECRET_KEY:-production_dermai_secret_key_milestone4_2026}
+      ACCESS_TOKEN_EXPIRE_MINUTES: 1440
+      UPLOAD_DIR: /app/uploads
+      CORS_ORIGINS: '["http://localhost:5173", "http://localhost:80", "http://localhost", "http://127.0.0.1:5173", "http://127.0.0.1"]'
+    volumes:
+      - backend_uploads:/app/uploads
+      - ./backend/artifacts:/app/backend/artifacts:ro
     ports:
       - "8000:8000"
-    depends_on:
-      - db
-    volumes:
-      - ./backend/uploads:/app/uploads
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    networks:
+      - dermai_network
 
+  # 3. Production Frontend Nginx Service
   frontend:
     build:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: dermai_frontend
-    restart: unless-stopped
-    environment:
-      VITE_API_BASE_URL: http://localhost:8000
-    ports:
-      - "5173:5173"
     depends_on:
       - backend
+    ports:
+      - "5173:80"
+    restart: unless-stopped
+    networks:
+      - dermai_network
 
 volumes:
   postgres_data:
+    name: dermai_postgres_data
+  backend_uploads:
+    name: dermai_backend_uploads
+
+networks:
+  dermai_network:
+    name: dermai_network
+    driver: bridge

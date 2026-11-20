@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*.sqlite3
+.pytest_cache/
+.venv/
+venv/
+.env
+*.log
+*.tsbuildinfo
+
+# Node
+node_modules/
+frontend/dist/
+frontend/.vite/
+
+# App data
+uploads/
+backend/uploads/
+backend/artifacts/models/
+*.db
+*.pth
+*.zip
+hmnist_*.csv
+
+# Large Datasets
+HAM10000_images_part_1/
+HAM10000_images_part_2/
+segmentation_dataset/
+data/
+checkpoints/
+
+# OS
+.DS_Store
+Thumbs.db
