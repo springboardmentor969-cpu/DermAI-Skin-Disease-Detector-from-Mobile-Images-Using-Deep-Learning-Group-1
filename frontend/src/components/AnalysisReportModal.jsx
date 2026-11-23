@@ -607,15 +607,16 @@ export const AnalysisReportModal = ({
             </div>
 
             {!gradcamAvailable || gradcamError ? (
-              /* Fallback message for demo/smoke model */
+              /* Fallback message when Grad-CAM unavailable or error */
               <div className="p-8 rounded-2xl border-2 border-dashed border-slate-200 bg-slate-50 text-center max-w-lg mx-auto">
                 <AlertTriangle className="w-9 h-9 text-amber-500 mx-auto mb-2" />
                 <h4 className="text-sm font-bold text-slate-800">
-                  Visual explanation not available for demo model
+                  Visual explanation unavailable
                 </h4>
                 <p className="text-xs text-slate-500 mt-1 max-w-md mx-auto">
-                  Grad-CAM activation overlays require convolutional feature maps from fully trained
-                  production weights.
+                  {!gradcamAvailable
+                    ? 'Grad-CAM activation overlays require convolutional feature maps from fully trained production weights.'
+                    : 'Attention map visualization could not be loaded at this time.'}
                 </p>
               </div>
             ) : gradcamLoading ? (

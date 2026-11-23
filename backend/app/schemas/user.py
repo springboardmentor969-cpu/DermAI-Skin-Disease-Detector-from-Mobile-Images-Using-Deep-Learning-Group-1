@@ -42,9 +42,19 @@ class Token(BaseModel):
     token_type: str = "bearer"
     role: str
     user_id: int
+    refresh_token: Optional[str] = None
 
 
 class TokenData(BaseModel):
     user_id: Optional[int] = None
     email: Optional[str] = None
     role: Optional[str] = None
+
+
+class RefreshTokenRequest(BaseModel):
+    refresh_token: str
+
+
+class LogoutRequest(BaseModel):
+    refresh_token: Optional[str] = None
+

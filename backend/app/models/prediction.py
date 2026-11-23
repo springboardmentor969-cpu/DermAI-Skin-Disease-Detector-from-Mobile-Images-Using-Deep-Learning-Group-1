@@ -19,7 +19,7 @@ class Prediction(Base):
     confidence = Column(Float, nullable=False)  # e.g., 0.942
     risk_level = Column(String(50), nullable=True)  # e.g., "HIGH", "MEDIUM", "LOW"
     top_n = Column(JSON, nullable=True)  # List of top-K classes and their softmax probabilities
-    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False)
+    created_at = Column(DateTime(timezone=True), server_default=func.now(), nullable=False, index=True)
 
     # Relationships
     image = relationship("Image", back_populates="predictions")

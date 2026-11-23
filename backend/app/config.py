@@ -5,6 +5,7 @@ Reads settings from the root .env file and environment variables.
 
 import sys
 from pathlib import Path
+from typing import Optional
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 # Locate the root .env file (one or two levels up from this config file)
@@ -17,6 +18,10 @@ ENV_FILE = ROOT_DIR / ".env" if (ROOT_DIR / ".env").exists() else BASE_DIR / ".e
 
 
 class Settings(BaseSettings):
+    # CORS and Host Security
+    ALLOWED_ORIGINS: str = "http://localhost:5173,http://localhost:3000"
+    ALLOWED_HOSTS: str = "localhost,127.0.0.1"
+
     # Application Info
     PROJECT_NAME: str = "DermAI Screening & Decision Support API"
     VERSION: str = "1.0.0"
@@ -52,6 +57,14 @@ class Settings(BaseSettings):
     GRADCAM_ENABLED: bool = True
     RISK_SCORING_ENABLED: bool = True
     ENSEMBLE_MODELS: str = ""
+
+    # Redis Cache Configuration
+    REDIS_HOST: str = "localhost"
+    REDIS_PORT: int = 6379
+    REDIS_DB: int = 0
+    REDIS_PASSWORD: Optional[str] = None
+    REDIS_URL: Optional[str] = None
+    REDIS_CACHE_TTL: int = 3600  # 1 hour in seconds
 
     model_config = SettingsConfigDict(
         env_file=str(ENV_FILE) if ENV_FILE.exists() else None,

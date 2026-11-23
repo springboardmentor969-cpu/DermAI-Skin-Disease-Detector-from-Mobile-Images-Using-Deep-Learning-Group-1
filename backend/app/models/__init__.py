@@ -10,6 +10,7 @@ from app.models.case import Case
 from app.models.image import Image
 from app.models.prediction import Prediction
 from app.models.audit import AuditLog
+from app.models.refresh_token import RefreshToken
 
 __all__ = [
     "Base",
@@ -20,4 +21,5 @@ __all__ = [
     "Image",
     "Prediction",
     "AuditLog",
+    "RefreshToken",
 ]

@@ -176,41 +176,57 @@ export const extractTopPrediction = (entry) => {
   };
 };
 
+// Module-level in-memory cache to preserve loaded history across page navigation
+let cachedHistoryState = {
+  items: null,
+  page: 1,
+  hasMore: true,
+};
+
 export const PredictionHistoryPage = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  const [history, setHistory] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [history, setHistory] = useState(() => cachedHistoryState.items || []);
+  const [loading, setLoading] = useState(() => cachedHistoryState.items === null);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [error, setError] = useState('');
-  const [page, setPage] = useState(1);
-  const [hasMore, setHasMore] = useState(false);
+  const [page, setPage] = useState(() => cachedHistoryState.page || 1);
+  const [hasMore, setHasMore] = useState(() => cachedHistoryState.hasMore ?? true);
 
+  const observerTarget = React.useRef(null);
   const limit = 10;
 
   useEffect(() => {
-    fetchHistory(page);
-  }, [page]);
+    if (cachedHistoryState.items === null) {
+      loadInitial();
+    }
+  }, []);
 
-  const fetchHistory = async (pageNum) => {
+  const loadInitial = async () => {
     setLoading(true);
     setError('');
     try {
-      const data = await casesApi.getPatientHistory('me', pageNum, limit);
+      const data = await casesApi.getPatientHistory('me', 1, limit);
       // Support both empty array [] and envelope { items: [], total: 0 }
       const items = Array.isArray(data) ? data : (data?.items || []);
+      const more = items.length === limit;
       setHistory(items);
-      setHasMore(items.length === limit);
-      setError('');
+      setPage(1);
+      setHasMore(more);
+      cachedHistoryState = {
+        items,
+        page: 1,
+        hasMore: more,
+      };
     } catch (err) {
       console.error('Failed to load prediction history:', err);
       // If 404 (e.g. patient has no profile/records yet), treat as empty history without error banner
       if (err.response?.status === 404) {
         setHistory([]);
         setHasMore(false);
-        setError('');
+        cachedHistoryState = { items: [], page: 1, hasMore: false };
       } else {
-        // Only show error banner if the request itself fails (network error or 5xx)
         const msg = !err.response
           ? 'Failed to load screening history. Please check your connection.'
           : err.response?.data?.detail || 'Failed to load screening history. Please try again.';
@@ -220,6 +236,58 @@ export const PredictionHistoryPage = () => {
       setLoading(false);
     }
   };
+
+  const loadMore = async () => {
+    if (loading || loadingMore || !hasMore) return;
+    setLoadingMore(true);
+    const nextPage = page + 1;
+    try {
+      const data = await casesApi.getPatientHistory('me', nextPage, limit);
+      const newItems = Array.isArray(data) ? data : (data?.items || []);
+      const more = newItems.length === limit;
+
+      setHistory((prev) => {
+        const existingIds = new Set(prev.map((i) => i.id));
+        const filtered = newItems.filter((i) => !existingIds.has(i.id));
+        const combined = [...prev, ...filtered];
+        cachedHistoryState.items = combined;
+        return combined;
+      });
+
+      setPage(nextPage);
+      setHasMore(more);
+      cachedHistoryState.page = nextPage;
+      cachedHistoryState.hasMore = more;
+    } catch (err) {
+      console.error('Failed to load more prediction history:', err);
+    } finally {
+      setLoadingMore(false);
+    }
+  };
+
+  // IntersectionObserver for infinite scrolling
+  useEffect(() => {
+    const target = observerTarget.current;
+    if (!target) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && hasMore && !loading && !loadingMore) {
+          loadMore();
+        }
+      },
+      { threshold: 0.1, rootMargin: '120px' }
+    );
+
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [hasMore, loading, loadingMore, page]);
+
+  const handleRefresh = () => {
+    cachedHistoryState = { items: null, page: 1, hasMore: true };
+    loadInitial();
+  };
+
 
   const formatDate = (dateString) => {
     if (!dateString) return 'Date unknown';
@@ -272,13 +340,25 @@ export const PredictionHistoryPage = () => {
           </p>
         </div>
 
-        <Link
-          to="/cases/new"
-          className="inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-sm font-semibold shadow-xs hover:shadow-sky-500/20 transition-all active:scale-[0.99]"
-        >
-          <PlusCircle className="w-4 h-4" />
-          <span>New Analysis</span>
-        </Link>
+        <div className="flex items-center space-x-2">
+          <button
+            type="button"
+            onClick={handleRefresh}
+            disabled={loading || loadingMore}
+            className="inline-flex items-center space-x-1.5 px-3 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-semibold transition-all cursor-pointer disabled:opacity-50"
+            title="Refresh history"
+          >
+            <RefreshCw className={`w-3.5 h-3.5 ${loading ? 'animate-spin text-sky-600' : ''}`} />
+            <span>Refresh</span>
+          </button>
+          <Link
+            to="/cases/new"
+            className="inline-flex items-center justify-center space-x-2 px-4 py-2.5 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-sm font-semibold shadow-xs hover:shadow-sky-500/20 transition-all active:scale-[0.99]"
+          >
+            <PlusCircle className="w-4 h-4" />
+            <span>New Analysis</span>
+          </Link>
+        </div>
       </div>
 
       {/* Error State */}
@@ -414,27 +494,37 @@ export const PredictionHistoryPage = () => {
               </div>
             );
           })}
+
+          {/* Loading more skeleton placeholders for infinite scroll */}
+          {loadingMore && (
+            <div className="space-y-4 pt-2">
+              {[1, 2].map((i) => (
+                <div
+                  key={`more-skeleton-${i}`}
+                  className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs flex items-center space-x-4 animate-pulse"
+                >
+                  <div className="w-20 h-20 rounded-xl bg-slate-200 shrink-0" />
+                  <div className="flex-1 space-y-2.5">
+                    <div className="w-1/4 h-3.5 bg-slate-200 rounded" />
+                    <div className="w-1/2 h-5 bg-slate-200 rounded" />
+                    <div className="w-1/3 h-2.5 bg-slate-200 rounded" />
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {/* Infinite Scroll Intersection Observer Sentinel */}
+          <div ref={observerTarget} className="h-4 w-full" />
         </div>
       )}
 
-      {/* Pagination Footer */}
-      {!loading && history.length > 0 && (
-        <div className="flex items-center justify-between pt-8 border-t border-slate-200 mt-8 text-xs font-medium text-slate-600">
-          <button
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-            disabled={page === 1}
-            className="px-3 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-          >
-            Previous
-          </button>
-          <span>Page {page}</span>
-          <button
-            onClick={() => setPage((p) => p + 1)}
-            disabled={!hasMore}
-            className="px-3 py-1.5 rounded-lg border border-slate-300 bg-white hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-          >
-            Next
-          </button>
+      {/* End of History Indicator */}
+      {!loading && !loadingMore && history.length > 0 && !hasMore && (
+        <div className="text-center pt-8 border-t border-slate-200 mt-8">
+          <p className="text-xs font-medium text-slate-400">
+            All screening history loaded ({history.length} cases)
+          </p>
         </div>
       )}
     </div>

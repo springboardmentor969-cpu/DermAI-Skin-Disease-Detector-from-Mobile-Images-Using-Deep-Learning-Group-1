@@ -32,49 +32,16 @@ import jwt
 
 from app.config import settings
 from app.models.audit import AuditLog
-
-# Password hashing context using bcrypt
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-
-def hash_password(password: str) -> str:
-    """Hash plain password using bcrypt."""
-    # Truncate at 72 bytes to satisfy bcrypt specification
-    return pwd_context.hash(password[:72])
-
-
-def verify_password(plain_password: str, hashed_password: str) -> bool:
-    """Verify plain password against hashed password."""
-    return pwd_context.verify(plain_password[:72], hashed_password)
-
-
-def create_access_token(data: Dict[str, Any], expires_delta: Optional[timedelta] = None) -> str:
-    """
-    Create a signed JWT access token with expiration time and payload claims.
-    """
-    to_encode = data.copy()
-    now = datetime.now(timezone.utc)
-    if expires_delta:
-        expire = now + expires_delta
-    else:
-        expire = now + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-
-    to_encode.update({
-        "exp": expire,
-        "iat": now,
-    })
-    return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
-
-
-def decode_access_token(token: str) -> Optional[Dict[str, Any]]:
-    """
-    Decode and validate a JWT access token against the configured secret key.
-    """
-    try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-        return payload
-    except jwt.PyJWTError:
-        return None
+from app.core.security import (
+    hash_password,
+    verify_password,
+    create_access_token,
+    create_refresh_token,
+    decode_access_token,
+    decode_refresh_token,
+    ACCESS_TOKEN_EXPIRE_MINUTES,
+    REFRESH_TOKEN_EXPIRE_DAYS,
+)
 
 
 def record_audit_log(

@@ -2,7 +2,7 @@
 Case model representing a clinical screening submission for a patient.
 """
 
-from sqlalchemy import Column, Integer, String, DateTime, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, ForeignKey, Index
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 from app.database import Base
@@ -10,6 +10,9 @@ from app.database import Base
 
 class Case(Base):
     __tablename__ = "cases"
+    __table_args__ = (
+        Index("ix_cases_patient_id_created_at_desc", "patient_id", "created_at"),
+    )
 
     id = Column(Integer, primary_key=True, index=True)
     patient_id = Column(Integer, ForeignKey("patients.id", ondelete="CASCADE"), nullable=False, index=True)

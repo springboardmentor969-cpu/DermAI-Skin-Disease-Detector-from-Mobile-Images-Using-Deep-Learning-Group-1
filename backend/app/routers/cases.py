@@ -20,11 +20,13 @@ from app.schemas.case import CaseCreate, CaseResponse, ImageResponse
 from app.services.auth_service import record_audit_log
 from app.services.storage_service import storage_service
 from ml.preprocessing.quality import assess_image_quality
+from ml.preprocessing.preprocess import optimize_image_for_storage
 
 router = APIRouter(prefix="/cases", tags=["Cases & Images"])
 
-MAX_IMAGE_SIZE = 10 * 1024 * 1024  # 10 MB maximum allowed file size
-MIN_IMAGE_DIMENSION = 224          # 224x224 minimum resolution
+MAX_IMAGE_SIZE = 20 * 1024 * 1024  # 20 MB maximum allowed file size
+MIN_IMAGE_DIMENSION = 50           # 50x50 minimum resolution
+
 
 
 @router.post(
@@ -179,8 +181,8 @@ async def upload_case_image(
     if file_size > MAX_IMAGE_SIZE:
         size_mb = file_size / (1024 * 1024)
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=f"File exceeds maximum allowed size of 10 MB (received {size_mb:.2f} MB).",
+            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            detail=f"File exceeds maximum allowed size of 20 MB (received {size_mb:.2f} MB).",
         )
 
     if file_size == 0:
@@ -203,31 +205,27 @@ async def upload_case_image(
             detail="Invalid image file: Failed to decode image contents with Pillow.",
         )
 
-    # Validate allowed formats (JPG / PNG)
-    if img_format not in ("JPEG", "JPG", "PNG"):
+    # Validate allowed formats (JPG / PNG / WebP / BMP)
+    if img_format not in ("JPEG", "JPG", "PNG", "WEBP", "BMP"):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail=f"Unsupported image format '{img_format}'. Only JPG and PNG images are allowed.",
         )
 
-    # 3. Minimum resolution check (224x224)
+    # 3. Minimum resolution check (50x50)
     if width < MIN_IMAGE_DIMENSION or height < MIN_IMAGE_DIMENSION:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail=(
-                f"Image resolution {width}x{height} is too low. "
-                f"Minimum required resolution is {MIN_IMAGE_DIMENSION}x{MIN_IMAGE_DIMENSION} pixels."
-            ),
+            detail="Image too small — minimum 50x50 pixels required for accurate analysis",
         )
 
-    # Generate unique storage key and upload to MinIO via boto3
-    ext = "jpg" if img_format in ("JPEG", "JPG") else "png"
-    unique_key = f"cases/{case.id}/{uuid.uuid4().hex}.{ext}"
-    content_type = "image/jpeg" if ext == "jpg" else "image/png"
+    # Preprocess & optimize image for storage: resize to 224x224 and compress to JPEG quality 85
+    storage_bytes, content_type = optimize_image_for_storage(file_bytes, target_size=(224, 224), quality=85)
+    unique_key = f"cases/{case.id}/{uuid.uuid4().hex}.jpg"
 
     try:
         storage_service.upload_file(
-            file_bytes=file_bytes,
+            file_bytes=storage_bytes,
             storage_key=unique_key,
             content_type=content_type,
         )

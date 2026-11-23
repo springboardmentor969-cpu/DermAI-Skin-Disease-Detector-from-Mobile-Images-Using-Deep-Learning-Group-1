@@ -7,16 +7,19 @@ Endpoints:
 """
 
 from typing import List, Optional
-from fastapi import APIRouter, Depends, HTTPException, status, Response, Query
+from fastapi import APIRouter, Depends, HTTPException, status, Response, Query, UploadFile, File, Form, Request
 from sqlalchemy.orm import Session
 
 from app.config import settings
+from app.core.limiter import limiter, get_user_or_ip
 from app.database import get_db
 from app.dependencies import get_current_user
+from app.models.case import Case
 from app.models.image import Image
+from app.models.patient import Patient
 from app.models.prediction import Prediction
 from app.models.user import User, UserRole
-from app.schemas.case import PredictionResponse
+from app.schemas.case import PredictionResponse, ImageResponse
 from app.services.auth_service import record_audit_log
 from app.services.storage_service import storage_service
 from app.services.inference import inference_service, MANDATORY_DISCLAIMER
@@ -146,9 +149,10 @@ def analyze_image(
             detail=f"Failed to retrieve image file from storage: {str(e)}",
         )
 
-    # 5. Run inference
+    # 5. Run inference with Redis caching
     try:
-        analysis_result = inference_service.predict(
+        from app.services.ml_service import ml_service
+        analysis_result = ml_service.predict(
             image_bytes,
             run_segmentation=settings.ENABLE_SEGMENTATION,
             threshold=settings.CONFIDENCE_THRESHOLD,
@@ -336,5 +340,145 @@ def get_case_image_gradcam(
     db: Session = Depends(get_db),
 ):
     return get_image_gradcam(image_id=image_id, type=type, current_user=current_user, db=db)
+
+
+ALLOWED_IMAGE_MIMES = {
+    "image/jpeg",
+    "image/jpg",
+    "image/png",
+    "image/webp",
+    "image/bmp",
+    "image/x-ms-bmp",
+}
+MAX_IMAGE_UPLOAD_BYTES = 20 * 1024 * 1024  # 20MB
+
+
+def is_valid_image_magic(header: bytes) -> bool:
+    """Checks the first 4 bytes of the binary header against known image magic byte signatures."""
+    if len(header) < 4:
+        return False
+    # JPEG: FF D8 FF
+    if header.startswith(b"\xff\xd8\xff"):
+        return True
+    # PNG: 89 50 4E 47
+    if header.startswith(b"\x89PNG"):
+        return True
+    # BMP: 42 4D (BM)
+    if header.startswith(b"BM"):
+        return True
+    # WebP: RIFF ... WEBP
+    if header.startswith(b"RIFF") and (len(header) < 12 or header[8:12] == b"WEBP"):
+        return True
+    return False
+
+
+@router.post(
+    "/images/upload",
+    response_model=ImageResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Upload a skin lesion image",
+    description="Uploads a skin lesion image. Creates a default case if case_id is omitted.",
+)
+@limiter.limit("10/minute", key_func=get_user_or_ip)
+async def upload_image_direct(
+    request: Request,
+    file: UploadFile = File(..., description="Image file (JPEG, PNG, WebP, BMP)"),
+    case_id: Optional[int] = Form(None, description="Optional case ID to attach image to"),
+    source: str = Form(default="camera", description="Image capture source ('camera' or 'gallery')"),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    from app.routers.cases import upload_case_image
+
+    # 1. Read file bytes to validate payload
+    file_bytes = await file.read()
+    file_size = len(file_bytes)
+    await file.seek(0)
+
+    # 2. Max file size: 20MB
+    if file_size > MAX_IMAGE_UPLOAD_BYTES:
+        raise HTTPException(
+            status_code=status.HTTP_413_REQUEST_ENTITY_TOO_LARGE,
+            detail=f"File exceeds maximum allowed size of 20 MB ({file_size / (1024*1024):.2f} MB).",
+        )
+    if file_size == 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Uploaded file is empty.",
+        )
+
+    # 3. Only accept image MIME types: image/jpeg, image/png, image/webp, image/bmp
+    content_type = (file.content_type or "").strip().lower()
+    if content_type and content_type not in ALLOWED_IMAGE_MIMES:
+        raise HTTPException(
+            status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+            detail="Only JPEG, PNG, WebP, BMP images accepted",
+        )
+
+    # 4. Check actual file magic bytes (first 4 bytes), not just Content-Type header
+    if not is_valid_image_magic(file_bytes[:16]):
+        raise HTTPException(
+            status_code=status.HTTP_415_UNSUPPORTED_MEDIA_TYPE,
+            detail="Only JPEG, PNG, WebP, BMP images accepted",
+        )
+
+    if case_id is None:
+        patient = None
+        if current_user.role == UserRole.PATIENT:
+            patient = db.query(Patient).filter(Patient.id == current_user.id).first()
+        if not patient:
+            patient = Patient(age=40, gender="other", notes="Self-screening upload")
+            db.add(patient)
+            db.flush()
+
+        case = Case(
+            patient_id=patient.id,
+            created_by=current_user.id,
+            body_location="Skin Lesion",
+            status="submitted",
+        )
+        db.add(case)
+        db.commit()
+        db.refresh(case)
+        case_id = case.id
+
+    return await upload_case_image(
+        case_id=case_id,
+        file=file,
+        source=source,
+        current_user=current_user,
+        db=db,
+    )
+
+
+@router.get(
+    "/images/{image_id}",
+    response_model=ImageResponse,
+    summary="Fetch image metadata",
+    description="Retrieves metadata for a specific uploaded image.",
+)
+def get_image_metadata(
+    image_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    image = db.query(Image).filter(Image.id == image_id).first()
+    if not image:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Image with ID {image_id} not found.",
+        )
+    check_image_case_access(image, current_user)
+    return ImageResponse(
+        id=image.id,
+        case_id=image.case_id,
+        storage_key=image.storage_key,
+        source=image.source,
+        captured_at=image.captured_at,
+        quality_label=image.quality_label,
+        quality_details=image.quality_details,
+        predictions=[format_prediction_response(p) for p in (image.predictions or [])],
+    )
+
 
 

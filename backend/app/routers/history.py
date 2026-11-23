@@ -44,11 +44,13 @@ def get_patient_history(
     patient_id: str,
     response: Response,
     page: int = Query(1, ge=1, description="Page number"),
-    limit: int = Query(10, ge=1, le=100, description="Items per page"),
+    limit: int = Query(10, ge=1, le=50, description="Items per page (maximum 50)"),
     envelope: bool = Query(False, description="Whether to return { items: [], total: 0 } envelope"),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ):
+    # Enforce maximum 50 results per page for query performance
+    limit = min(max(1, limit), 50)
     is_me = str(patient_id).strip().lower() == "me"
 
     pid: Optional[int] = None

@@ -130,6 +130,35 @@ def to_pytorch_channels_first(img_array: np.ndarray) -> np.ndarray:
     return np.ascontiguousarray(transposed, dtype=np.float32)
 
 
+def optimize_image_for_storage(
+    image_input: Union[str, Path, bytes, PILImage.Image, np.ndarray],
+    target_size: Tuple[int, int] = TARGET_IMAGE_SIZE,
+    quality: int = 85,
+) -> Tuple[bytes, str]:
+    """
+    Optimizes and prepares an image for long-term storage in MinIO.
+    - Centers and crops/resizes image to target dimensions (224x224)
+    - Compresses to JPEG format with quality 85 (reducing storage footprints)
+
+    Args:
+        image_input: Image filepath, byte buffer, PIL Image, or NumPy array.
+        target_size: Output resolution tuple (default: 224x224).
+        quality: JPEG compression quality level (default: 85).
+
+    Returns:
+        Tuple[bytes, str]: (compressed_jpeg_bytes, "image/jpeg")
+    """
+    img = validate_image(image_input)
+    img = fix_exif_orientation(img)
+    img = center_crop_square(img)
+    img = resize_image(img, size=target_size)
+    img = convert_to_rgb(img)
+
+    buffer = io.BytesIO()
+    img.save(buffer, format="JPEG", quality=quality, optimize=True)
+    return buffer.getvalue(), "image/jpeg"
+
+
 def preprocess_image(
     image_input: Union[str, Path, bytes, PILImage.Image, np.ndarray],
     target_size: Tuple[int, int] = TARGET_IMAGE_SIZE,
@@ -169,3 +198,4 @@ def preprocess_image(
     pytorch_array = to_pytorch_channels_first(arr_normalized)
 
     return pytorch_array
+

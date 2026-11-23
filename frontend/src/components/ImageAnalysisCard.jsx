@@ -11,8 +11,10 @@ import {
   Info,
   CheckCircle,
   Download,
+  FileText,
 } from 'lucide-react';
 import { casesApi } from '../api/client';
+import { AnalysisReportModal } from './AnalysisReportModal';
 
 const DIAGNOSTIC_NAMES = {
   mel: 'Melanoma',
@@ -90,6 +92,7 @@ export const ImageAnalysisCard = ({
   const [gradcamUrl, setGradcamUrl] = useState(null);
   const [gradcamLoading, setGradcamLoading] = useState(false);
   const [gradcamError, setGradcamError] = useState('');
+  const [isReportOpen, setIsReportOpen] = useState(false);
 
   const isPoorQuality = (image.quality_label || '').toLowerCase() === 'poor';
 
@@ -112,19 +115,36 @@ export const ImageAnalysisCard = ({
     }
   };
 
+  const handleLoadGradcam = async () => {
+    if (gradcamUrl || gradcamLoading) return;
+    setGradcamLoading(true);
+    setGradcamError('');
+    try {
+      const url = await casesApi.getGradcamBlobUrl(image.id);
+      if (!url) {
+        setGradcamError('Visual explanation unavailable');
+      } else {
+        setGradcamUrl(url);
+      }
+    } catch (err) {
+      console.warn('Failed to load Grad-CAM overlay:', err);
+      setGradcamError('Visual explanation unavailable');
+    } finally {
+      setGradcamLoading(false);
+    }
+  };
+
+  const handleOpenReportModal = () => {
+    setIsReportOpen(true);
+    // Lazy load Grad-CAM images only when user clicks "View Analysis Report"
+    if (!gradcamUrl && image?.id) {
+      handleLoadGradcam();
+    }
+  };
+
   const handleToggleGradcam = async () => {
     if (!showGradcam && !gradcamUrl) {
-      setGradcamLoading(true);
-      setGradcamError('');
-      try {
-        const url = await casesApi.getGradcamBlobUrl(image.id);
-        setGradcamUrl(url);
-      } catch (err) {
-        console.error('Failed to load Grad-CAM overlay:', err);
-        setGradcamError('Could not load AI attention map overlay.');
-      } finally {
-        setGradcamLoading(false);
-      }
+      await handleLoadGradcam();
     }
     setShowGradcam((prev) => !prev);
   };
@@ -601,7 +621,10 @@ export const ImageAnalysisCard = ({
               )}
 
               {gradcamError && (
-                <p className="mt-1 text-xs text-rose-600">{gradcamError}</p>
+                <div className="mt-2 p-2 rounded-lg bg-amber-50 border border-amber-200 text-amber-800 text-[11px] flex items-center space-x-1.5">
+                  <AlertTriangle className="w-3.5 h-3.5 text-amber-600 shrink-0" />
+                  <span>Visual explanation unavailable</span>
+                </div>
               )}
 
               {showGradcam && gradcamUrl && (
@@ -690,6 +713,16 @@ export const ImageAnalysisCard = ({
             </span>
           </div>
 
+          {/* View Analysis Report Modal */}
+          <button
+            type="button"
+            onClick={handleOpenReportModal}
+            className="w-full py-2.5 px-3 rounded-xl bg-sky-600 hover:bg-sky-700 text-white text-xs font-semibold flex items-center justify-center space-x-2 transition-all shadow-xs active:scale-[0.99] cursor-pointer"
+          >
+            <FileText className="w-4 h-4 text-sky-200" />
+            <span>View Analysis Report</span>
+          </button>
+
           {/* Download Report as PDF */}
           <button
             type="button"
@@ -708,6 +741,26 @@ export const ImageAnalysisCard = ({
             </span>
           </div>
         </div>
+      )}
+
+      {/* Milestone 3 Analysis Report Modal */}
+      {isReportOpen && (
+        <AnalysisReportModal
+          isOpen={isReportOpen}
+          onClose={() => setIsReportOpen(false)}
+          patientName={patientName || 'Patient'}
+          patientAge={patientAge || 'N/A'}
+          caseId={caseId || image?.case_id}
+          dateOfAnalysis={prediction?.created_at || new Date().toISOString()}
+          allPredictions={allPredictions || prediction?.all_predictions || prediction?.top_n || []}
+          predictedClass={prediction?.predicted_class}
+          confidence={prediction?.confidence}
+          riskLevel={prediction?.risk_level}
+          urgencyRecommendation={prediction?.risk_message}
+          imageId={image?.id}
+          imageUrl={imageUrl}
+          gradcamAvailable={!prediction?.demo_model}
+        />
       )}
     </div>
   );

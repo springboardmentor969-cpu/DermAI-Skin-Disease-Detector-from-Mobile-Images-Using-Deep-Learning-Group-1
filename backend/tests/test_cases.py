@@ -243,7 +243,7 @@ def test_wrong_file_type_fails(client: TestClient):
 
 
 def test_too_large_file_fails(client: TestClient):
-    """Uploading a file exceeding 10 MB is rejected with 400 Bad Request."""
+    """Uploading a file exceeding 20 MB is rejected with 413 Request Entity Too Large."""
     token = get_auth_token(client, "toolarge@example.com", "patient")
 
     case_res = client.post(
@@ -253,20 +253,20 @@ def test_too_large_file_fails(client: TestClient):
     )
     case_id = case_res.json()["id"]
 
-    # Create dummy payload larger than 10 MB (10 MB + 1 KB)
-    oversized_data = b"X" * (10 * 1024 * 1024 + 1024)
+    # Create dummy payload larger than 20 MB (20 MB + 1 KB)
+    oversized_data = b"X" * (20 * 1024 * 1024 + 1024)
 
     response = client.post(
         f"/cases/{case_id}/images",
         files={"file": ("huge_lesion.jpg", oversized_data, "image/jpeg")},
         headers={"Authorization": f"Bearer {token}"},
     )
-    assert response.status_code == 400
+    assert response.status_code == 413
     assert "exceeds maximum allowed size" in response.json()["detail"].lower()
 
 
 def test_too_low_resolution_fails(client: TestClient):
-    """Uploading an image below 224x224 minimum resolution is rejected."""
+    """Uploading an image below 50x50 minimum resolution is rejected."""
     token = get_auth_token(client, "lowres@example.com", "patient")
 
     case_res = client.post(
@@ -276,8 +276,8 @@ def test_too_low_resolution_fails(client: TestClient):
     )
     case_id = case_res.json()["id"]
 
-    # Image with 150x150 resolution (below 224x224 requirement)
-    low_res_bytes = create_test_image(width=150, height=150, img_format="PNG")
+    # Image with 40x40 resolution (below 50x50 requirement)
+    low_res_bytes = create_test_image(width=40, height=40, img_format="PNG")
 
     response = client.post(
         f"/cases/{case_id}/images",
@@ -285,8 +285,7 @@ def test_too_low_resolution_fails(client: TestClient):
         headers={"Authorization": f"Bearer {token}"},
     )
     assert response.status_code == 400
-    assert "resolution" in response.json()["detail"].lower()
-    assert "too low" in response.json()["detail"].lower()
+    assert "image too small — minimum 50x50 pixels required for accurate analysis" in response.json()["detail"].lower()
 
 
 def test_get_image_content(client: TestClient):
