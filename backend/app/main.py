@@ -30,6 +30,7 @@ from app.routers import (
     images_router,
     history_router,
     dashboard_router,
+    reviews_router,
 )
 from app.services.inference import inference_service
 
@@ -133,6 +134,7 @@ app.include_router(cases_router)
 app.include_router(images_router)
 app.include_router(history_router)
 app.include_router(dashboard_router)
+app.include_router(reviews_router)
 
 
 @app.get("/", tags=["Root"])

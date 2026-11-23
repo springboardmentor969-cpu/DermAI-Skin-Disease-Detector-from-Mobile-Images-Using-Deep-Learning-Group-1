@@ -481,4 +481,39 @@ def get_image_metadata(
     )
 
 
+@router.get(
+    "/images/{image_id}/content",
+    summary="Download original image file",
+    description="Streams the raw stored image bytes from MinIO S3 object storage.",
+)
+def get_image_file_content(
+    image_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+):
+    image = db.query(Image).filter(Image.id == image_id).first()
+    if not image:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Image with ID {image_id} not found.",
+        )
+    check_image_case_access(image, current_user)
+    try:
+        data = storage_service.get_file(image.storage_key)
+        media_type = "image/jpeg"
+        if image.storage_key.lower().endswith(".png"):
+            media_type = "image/png"
+        elif image.storage_key.lower().endswith(".webp"):
+            media_type = "image/webp"
+        elif image.storage_key.lower().endswith(".bmp"):
+            media_type = "image/bmp"
+        return Response(content=data, media_type=media_type)
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to retrieve image from storage: {e}",
+        )
+
+
+
 

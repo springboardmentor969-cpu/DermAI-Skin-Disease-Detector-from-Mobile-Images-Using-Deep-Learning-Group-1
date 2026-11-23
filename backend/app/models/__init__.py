@@ -11,6 +11,7 @@ from app.models.image import Image
 from app.models.prediction import Prediction
 from app.models.audit import AuditLog
 from app.models.refresh_token import RefreshToken
+from app.models.clinical_review import ClinicalReview
 
 __all__ = [
     "Base",
@@ -22,4 +23,5 @@ __all__ = [
     "Prediction",
     "AuditLog",
     "RefreshToken",
+    "ClinicalReview",
 ]

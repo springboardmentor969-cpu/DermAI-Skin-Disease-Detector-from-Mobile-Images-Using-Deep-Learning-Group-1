@@ -163,4 +163,31 @@ export const imagesApi = {
   },
 };
 
+export const reviewsApi = {
+  submitReview: async (imageId, reviewData) => {
+    const response = await apiClient.post(`/images/${imageId}/review`, reviewData);
+    return response.data;
+  },
+  getReview: async (imageId) => {
+    const response = await apiClient.get(`/images/${imageId}/review`);
+    return response.data;
+  },
+  getPending: async (page = 1, limit = 20) => {
+    const response = await apiClient.get('/clinician/pending', {
+      params: { page, limit },
+    });
+    return response.data;
+  },
+  getStats: async () => {
+    const response = await apiClient.get('/clinician/stats');
+    return response.data;
+  },
+  getCases: async (filter = 'all', page = 1, limit = 20) => {
+    const response = await apiClient.get('/clinician/cases', {
+      params: { filter, page, limit },
+    });
+    return response.data;
+  },
+};
+
 export default apiClient;

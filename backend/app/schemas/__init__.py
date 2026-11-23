@@ -23,6 +23,13 @@ from app.schemas.case import (
     AuditLogResponse,
 )
 from app.schemas.health import HealthResponse
+from app.schemas.review import (
+    ClinicalReviewCreate,
+    ClinicalReviewResponse,
+    PendingReviewItem,
+    ClinicianStatsResponse,
+    ClinicianCaseItem,
+)
 
 __all__ = [
     "UserBase",
@@ -42,4 +49,9 @@ __all__ = [
     "PredictionResponse",
     "AuditLogResponse",
     "HealthResponse",
+    "ClinicalReviewCreate",
+    "ClinicalReviewResponse",
+    "PendingReviewItem",
+    "ClinicianStatsResponse",
+    "ClinicianCaseItem",
 ]

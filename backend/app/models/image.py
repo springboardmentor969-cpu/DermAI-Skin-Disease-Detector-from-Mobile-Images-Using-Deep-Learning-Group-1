@@ -23,6 +23,7 @@ class Image(Base):
     # Relationships
     case = relationship("Case", back_populates="images")
     predictions = relationship("Prediction", back_populates="image", cascade="all, delete-orphan")
+    reviews = relationship("ClinicalReview", back_populates="image", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<Image id={self.id} case_id={self.case_id} quality={self.quality_label}>"

@@ -12,6 +12,8 @@ import { NewCasePage } from './pages/NewCasePage';
 import { UploadPage } from './pages/UploadPage';
 import { CaseDetailPage } from './pages/CaseDetailPage';
 import { PredictionHistoryPage } from './pages/PredictionHistoryPage';
+import { ClinicalReviewPage } from './pages/ClinicalReviewPage';
+import { CliniciandashboardPage } from './pages/CliniciandashboardPage';
 
 const RootRedirect = () => {
   const { isAuthenticated, loading } = useAuth();
@@ -69,6 +71,24 @@ export const App = () => {
                 element={
                   <ProtectedRoute>
                     <PredictionHistoryPage />
+                  </ProtectedRoute>
+                }
+              />
+
+              {/* Clinician Only Routes */}
+              <Route
+                path="/review/:image_id"
+                element={
+                  <ProtectedRoute allowedRoles={['clinician', 'admin']}>
+                    <ClinicalReviewPage />
+                  </ProtectedRoute>
+                }
+              />
+              <Route
+                path="/clinician"
+                element={
+                  <ProtectedRoute allowedRoles={['clinician', 'admin']}>
+                    <CliniciandashboardPage />
                   </ProtectedRoute>
                 }
               />

@@ -9,6 +9,7 @@ from app.routers.cases import router as cases_router
 from app.routers.images import router as images_router
 from app.routers.history import router as history_router
 from app.routers.dashboard import router as dashboard_router
+from app.routers.reviews import router as reviews_router
 
 __all__ = [
     "health_router",
@@ -18,4 +19,5 @@ __all__ = [
     "images_router",
     "history_router",
     "dashboard_router",
+    "reviews_router",
 ]

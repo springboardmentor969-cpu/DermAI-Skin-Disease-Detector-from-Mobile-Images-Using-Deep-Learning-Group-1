@@ -2,8 +2,8 @@ import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 
-export const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, loading } = useAuth();
+export const ProtectedRoute = ({ children, allowedRoles }) => {
+  const { user, isAuthenticated, loading } = useAuth();
   const location = useLocation();
 
   if (loading) {
@@ -19,6 +19,15 @@ export const ProtectedRoute = ({ children }) => {
 
   if (!isAuthenticated) {
     return <Navigate to="/login" state={{ from: location }} replace />;
+  }
+
+  // Role-based protection: redirect unauthorized roles (e.g. patients) to /dashboard
+  if (allowedRoles && allowedRoles.length > 0) {
+    const userRole = (user?.role || '').toLowerCase();
+    const isAllowed = allowedRoles.map((r) => r.toLowerCase()).includes(userRole);
+    if (!isAllowed) {
+      return <Navigate to="/dashboard" replace />;
+    }
   }
 
   return children;

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Activity, PlusCircle, LayoutDashboard, LogOut, User as UserIcon, Clock } from 'lucide-react';
+import { Activity, PlusCircle, LayoutDashboard, LogOut, User as UserIcon, Clock, FileCheck } from 'lucide-react';
 
 export const Navbar = () => {
   const { user, isAuthenticated, logout } = useAuth();
@@ -76,17 +76,30 @@ export const Navbar = () => {
           <div className="flex items-center space-x-2 sm:space-x-4">
             {/* Dashboard (Clinician and Admin roles only) */}
             {(user?.role === 'clinician' || user?.role === 'admin') && (
-              <Link
-                to="/dashboard"
-                className={`flex items-center space-x-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
-                  isActive('/dashboard')
-                    ? 'bg-sky-50 text-sky-700'
-                    : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
-                }`}
-              >
-                <LayoutDashboard className="w-4 h-4" />
-                <span className="hidden sm:inline">Dashboard</span>
-              </Link>
+              <>
+                <Link
+                  to="/clinician"
+                  className={`flex items-center space-x-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    isActive('/clinician')
+                      ? 'bg-sky-50 text-sky-700'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                  }`}
+                >
+                  <FileCheck className="w-4 h-4" />
+                  <span className="hidden sm:inline">Clinical Triage</span>
+                </Link>
+                <Link
+                  to="/dashboard"
+                  className={`flex items-center space-x-1.5 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+                    isActive('/dashboard')
+                      ? 'bg-sky-50 text-sky-700'
+                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
+                  }`}
+                >
+                  <LayoutDashboard className="w-4 h-4" />
+                  <span className="hidden sm:inline">Analytics</span>
+                </Link>
+              </>
             )}
 
             {/* My History (Patient role only) */}
