@@ -90,13 +90,13 @@ def test_rate_limiting_general_endpoints(client: TestClient):
     """
     limiter.reset()
 
-    # Fire 100 requests to /health
+    # Fire 100 requests to general endpoint /
     for i in range(100):
-        res = client.get("/health")
+        res = client.get("/")
         assert res.status_code == 200
 
     # 101st request should hit 429
-    res_101 = client.get("/health")
+    res_101 = client.get("/")
     assert res_101.status_code == 429
     assert "too many requests" in res_101.json()["detail"].lower()
 

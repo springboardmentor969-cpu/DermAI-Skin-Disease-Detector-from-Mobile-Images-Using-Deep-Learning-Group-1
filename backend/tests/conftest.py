@@ -40,6 +40,13 @@ def setup_test_db():
 
 
 @pytest.fixture(autouse=True)
+def mock_db_check(monkeypatch):
+    """Mocks database connectivity check to avoid network timeouts during tests."""
+    from app import database
+    monkeypatch.setattr(database, "check_database_connection", lambda: True)
+
+
+@pytest.fixture(autouse=True)
 def reset_rate_limiter():
     """Resets the rate limiter state before and after each test."""
     try:
