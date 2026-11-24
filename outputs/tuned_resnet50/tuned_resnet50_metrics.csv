@@ -1,0 +1,8 @@
+Metric,Value
+accuracy,0.612805
+macro_precision,0.560245
+macro_recall,0.577062
+macro_f1,0.564396
+balanced_accuracy,0.577062
+mcc,0.483130
+macro_auc_roc,0.859192

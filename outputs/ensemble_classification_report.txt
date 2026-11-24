@@ -1,0 +1,60 @@
+DERMAI THREE-MODEL ENSEMBLE EVALUATION
+
+
+ResNet-50
+accuracy: 0.6646
+precision: 0.6463
+recall: 0.6446
+f1: 0.6298
+balanced_accuracy: 0.6446
+mcc: 0.5590
+auc: 0.8879
+
+DenseNet-121
+accuracy: 0.5884
+precision: 0.5100
+recall: 0.6054
+f1: 0.5383
+balanced_accuracy: 0.6054
+mcc: 0.4634
+auc: 0.8792
+
+ViT-B/16
+accuracy: 0.6159
+precision: 0.5017
+recall: 0.5381
+f1: 0.5136
+balanced_accuracy: 0.5381
+mcc: 0.4908
+auc: 0.8919
+
+Ensemble
+accuracy: 0.6646
+precision: 0.5863
+recall: 0.6419
+f1: 0.6069
+balanced_accuracy: 0.6419
+mcc: 0.5546
+auc: 0.9209
+
+ENSEMBLE CLASSIFICATION REPORT
+              precision    recall  f1-score   support
+
+         ACK       0.79      0.73      0.76        98
+         BCC       0.73      0.66      0.69       125
+         MEL       0.50      0.62      0.56         8
+         NEV       0.56      0.68      0.61        34
+         SCC       0.38      0.32      0.35        34
+         SEK       0.56      0.83      0.67        29
+
+    accuracy                           0.66       328
+   macro avg       0.59      0.64      0.61       328
+weighted avg       0.67      0.66      0.66       328
+
+ENSEMBLE CONFUSION MATRIX
+[[72 12  0  1  5  8]
+ [15 83  0 10 13  4]
+ [ 0  0  5  1  0  2]
+ [ 0  2  4 23  0  5]
+ [ 4 16  0  3 11  0]
+ [ 0  1  1  3  0 24]]

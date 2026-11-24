@@ -1,0 +1,178 @@
+{
+    "project": "DermAI",
+    "milestone": "Milestone 1",
+    "title": "Dataset Preparation and CNN Baseline Evaluation",
+    "dataset_summary": {
+        "dataset": "PAD-UFES-20",
+        "total_images": 2298,
+        "total_patients": 1373,
+        "total_lesions": 1641,
+        "image_size": "224x224",
+        "image_channels": 3,
+        "classes": [
+            "ACK",
+            "BCC",
+            "MEL",
+            "NEV",
+            "SCC",
+            "SEK"
+        ]
+    },
+    "split_summary": {
+        "train": {
+            "images": 1634,
+            "patients": 961
+        },
+        "validation": {
+            "images": 336,
+            "patients": 206
+        },
+        "test": {
+            "images": 328,
+            "patients": 206
+        },
+        "patient_overlap": {
+            "train_validation": 0,
+            "train_test": 0,
+            "validation_test": 0
+        }
+    },
+    "model_results": {
+        "ResNet-50": {
+            "accuracy": 0.6646,
+            "macro_precision": 0.6463,
+            "macro_recall": 0.6446,
+            "macro_f1": 0.6298,
+            "balanced_accuracy": 0.6446,
+            "mcc": 0.559,
+            "macro_auc_roc": 0.8879,
+            "best_checkpoint_epoch": 5,
+            "per_class": {
+                "ACK": {
+                    "precision": 0.72,
+                    "recall": 0.73,
+                    "f1": 0.73
+                },
+                "BCC": {
+                    "precision": 0.76,
+                    "recall": 0.62,
+                    "f1": 0.69
+                },
+                "MEL": {
+                    "precision": 0.8,
+                    "recall": 0.5,
+                    "f1": 0.62
+                },
+                "NEV": {
+                    "precision": 0.65,
+                    "recall": 0.71,
+                    "f1": 0.68
+                },
+                "SCC": {
+                    "precision": 0.45,
+                    "recall": 0.44,
+                    "f1": 0.45
+                },
+                "SEK": {
+                    "precision": 0.49,
+                    "recall": 0.86,
+                    "f1": 0.62
+                }
+            }
+        },
+        "DenseNet-121": {
+            "accuracy": 0.5884,
+            "macro_precision": 0.51,
+            "macro_recall": 0.6054,
+            "macro_f1": 0.5383,
+            "balanced_accuracy": 0.6054,
+            "mcc": 0.4634,
+            "macro_auc_roc": 0.8792,
+            "best_checkpoint_epoch": 3,
+            "per_class": {
+                "ACK": {
+                    "precision": 0.73,
+                    "recall": 0.67,
+                    "f1": 0.7
+                },
+                "BCC": {
+                    "precision": 0.71,
+                    "recall": 0.58,
+                    "f1": 0.64
+                },
+                "MEL": {
+                    "precision": 0.41,
+                    "recall": 0.88,
+                    "f1": 0.56
+                },
+                "NEV": {
+                    "precision": 0.57,
+                    "recall": 0.62,
+                    "f1": 0.59
+                },
+                "SCC": {
+                    "precision": 0.21,
+                    "recall": 0.24,
+                    "f1": 0.22
+                },
+                "SEK": {
+                    "precision": 0.43,
+                    "recall": 0.66,
+                    "f1": 0.52
+                }
+            }
+        },
+        "EfficientNet-B0": {
+            "accuracy": 0.6037,
+            "macro_precision": 0.5225,
+            "macro_recall": 0.5621,
+            "macro_f1": 0.5348,
+            "balanced_accuracy": 0.5621,
+            "mcc": 0.4756,
+            "macro_auc_roc": 0.8755,
+            "best_checkpoint_epoch": 5,
+            "per_class": {
+                "ACK": {
+                    "precision": 0.66,
+                    "recall": 0.73,
+                    "f1": 0.7
+                },
+                "BCC": {
+                    "precision": 0.72,
+                    "recall": 0.58,
+                    "f1": 0.64
+                },
+                "MEL": {
+                    "precision": 0.33,
+                    "recall": 0.5,
+                    "f1": 0.4
+                },
+                "NEV": {
+                    "precision": 0.75,
+                    "recall": 0.71,
+                    "f1": 0.73
+                },
+                "SCC": {
+                    "precision": 0.24,
+                    "recall": 0.24,
+                    "f1": 0.24
+                },
+                "SEK": {
+                    "precision": 0.43,
+                    "recall": 0.62,
+                    "f1": 0.51
+                }
+            }
+        }
+    },
+    "best_model": "ResNet-50",
+    "selection_metric": "Macro F1",
+    "observations": [
+        "ResNet-50 achieved the strongest overall baseline performance.",
+        "ResNet-50 achieved the highest accuracy, macro precision, macro F1, balanced accuracy, MCC, and macro AUC-ROC among the three models.",
+        "SCC classification is a major weakness across all three baseline models.",
+        "MEL test performance should be interpreted cautiously because the test set contains only 8 MEL samples.",
+        "Patient-level splitting prevented patient overlap between train, validation, and test sets.",
+        "The baseline results are research results and should not be interpreted as clinical-ready diagnostic performance."
+    ]
+}
