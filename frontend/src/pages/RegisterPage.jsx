@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Mail, Lock, User as UserIcon, Shield, ArrowRight, AlertCircle } from 'lucide-react';
 import { DermoscopeLogo } from '../components/DermoscopeLogo';
 
 export const RegisterPage = () => {
+  useEffect(() => {
+    document.title = 'Register | DermAI';
+  }, []);
+
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',

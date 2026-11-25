@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { useAuth } from '../context/AuthContext';
 import apiClient, { reviewsApi, imagesApi } from '../api/client';
 import {
@@ -65,6 +66,7 @@ export const ClinicalReviewPage = () => {
 
   // Load image, predictions, and existing review
   useEffect(() => {
+    document.title = 'Case Review | DermAI';
     let isMounted = true;
 
     const loadData = async () => {
@@ -192,12 +194,15 @@ export const ClinicalReviewPage = () => {
       const result = await reviewsApi.submitReview(image_id, reviewPayload);
       setExistingReview(result);
       setSuccessMsg('Clinical diagnostic review successfully saved and verified!');
+      toast.success('Clinical review saved successfully!');
 
       // Scroll to top or show alert
       window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (err) {
       console.error('Failed to submit clinical review:', err);
-      setError(err.response?.data?.detail || 'Failed to submit review. Please try again.');
+      const errDetail = err.response?.data?.detail || 'Failed to submit review. Please try again.';
+      setError(errDetail);
+      toast.error(errDetail);
     } finally {
       setSubmitting(false);
     }

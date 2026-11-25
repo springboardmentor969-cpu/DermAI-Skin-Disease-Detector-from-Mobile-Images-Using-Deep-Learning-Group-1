@@ -1,0 +1,132 @@
+services:
+  # ----------------------------------------------------------------------------
+  # PostgreSQL Database Service (Production)
+  # ----------------------------------------------------------------------------
+  db:
+    image: postgres:15
+    container_name: dermai-db-prod
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-dermai_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-dermai_password}
+      POSTGRES_DB: ${POSTGRES_DB:-dermai_db}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - dermai-net
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-dermai_user} -d ${POSTGRES_DB:-dermai_db}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ----------------------------------------------------------------------------
+  # MinIO Object Storage Service (Production)
+  # ----------------------------------------------------------------------------
+  minio:
+    image: pgsty/silo:RELEASE.2026-09-16T00-00-00Z
+    container_name: dermai-minio-prod
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    env_file:
+      - .env
+    environment:
+      MINIO_ROOT_USER: ${MINIO_ROOT_USER:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-minioadmin}
+    volumes:
+      - minio_data:/data
+    networks:
+      - dermai-net
+    healthcheck:
+      test: ["CMD", "mc", "ready", "local"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ----------------------------------------------------------------------------
+  # Redis In-Memory Cache Service (Production)
+  # ----------------------------------------------------------------------------
+  redis:
+    image: redis:7-alpine
+    container_name: dermai-redis-prod
+    restart: unless-stopped
+    env_file:
+      - .env
+    networks:
+      - dermai-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ----------------------------------------------------------------------------
+  # FastAPI Backend Service (Production)
+  # Not exposed externally; only reachable on internal network by frontend proxy
+  # ----------------------------------------------------------------------------
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    container_name: dermai-backend-prod
+    restart: unless-stopped
+    env_file:
+      - .env
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-dermai_user}:${POSTGRES_PASSWORD:-dermai_password}@db:5432/${POSTGRES_DB:-dermai_db}
+      MINIO_ENDPOINT: minio:9000
+      REDIS_URL: redis://redis:6379/0
+      ENVIRONMENT: production
+    networks:
+      - dermai-net
+    depends_on:
+      db:
+        condition: service_healthy
+      minio:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ----------------------------------------------------------------------------
+  # React + Vite + Nginx Frontend Service (Production)
+  # Only service with external port exposed (Port 80)
+  # ----------------------------------------------------------------------------
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    container_name: dermai-frontend-prod
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "80:80"
+    networks:
+      - dermai-net
+    depends_on:
+      backend:
+        condition: service_healthy
+
+# ------------------------------------------------------------------------------
+# Internal Application Network
+# ------------------------------------------------------------------------------
+networks:
+  dermai-net:
+    name: dermai-net
+    driver: bridge
+
+# ------------------------------------------------------------------------------
+# Persistent Named Volumes
+# ------------------------------------------------------------------------------
+volumes:
+  postgres_data:
+    name: postgres_data
+  minio_data:
+    name: minio_data

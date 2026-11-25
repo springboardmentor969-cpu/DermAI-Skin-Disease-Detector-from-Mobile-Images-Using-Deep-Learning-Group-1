@@ -16,6 +16,15 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     password: str
+    name: Optional[str] = None
+
+    @model_validator(mode="before")
+    @classmethod
+    def handle_name_alias(cls, data):
+        if isinstance(data, dict):
+            if "name" in data and not data.get("full_name"):
+                data["full_name"] = data["name"]
+        return data
 
 
 class UserLogin(BaseModel):

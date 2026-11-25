@@ -95,3 +95,26 @@ class StorageService:
 
 # Global singleton instance
 storage_service = StorageService()
+
+
+def check_minio_connection(timeout_seconds: float = 2.0) -> bool:
+    """
+    Utility function to test MinIO S3 object storage connectivity.
+    """
+    try:
+        from app.config import settings
+        protocol = "https" if settings.MINIO_USE_SSL else "http"
+        endpoint = f"{protocol}://{settings.MINIO_ENDPOINT}"
+        client = boto3.client(
+            "s3",
+            endpoint_url=endpoint,
+            aws_access_key_id=settings.MINIO_ROOT_USER,
+            aws_secret_access_key=settings.MINIO_ROOT_PASSWORD,
+            config=Config(signature_version="s3v4", connect_timeout=timeout_seconds, read_timeout=timeout_seconds),
+            region_name="us-east-1",
+        )
+        client.list_buckets()
+        return True
+    except Exception:
+        return False
+

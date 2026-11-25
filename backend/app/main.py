@@ -137,6 +137,26 @@ app.include_router(dashboard_router)
 app.include_router(reviews_router)
 
 
+@app.get("/health", tags=["System Health"])
+def health_check():
+    """
+    Production health check endpoint for Docker container orchestration.
+    Checks DB and MinIO connectivity and reports each status.
+    """
+    from datetime import datetime, timezone
+    from app.database import check_database_connection
+    from app.services.storage_service import check_minio_connection
+
+    db_connected = check_database_connection()
+    minio_connected = check_minio_connection()
+    return {
+        "status": "ok",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "db": "ok" if db_connected else "error",
+        "minio": "ok" if minio_connected else "error",
+    }
+
+
 @app.get("/", tags=["Root"])
 def root():
     return {

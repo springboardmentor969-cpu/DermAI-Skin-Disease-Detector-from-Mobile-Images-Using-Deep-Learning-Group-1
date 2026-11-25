@@ -44,6 +44,11 @@ def mock_db_check(monkeypatch):
     """Mocks database connectivity check to avoid network timeouts during tests."""
     from app import database
     monkeypatch.setattr(database, "check_database_connection", lambda: True)
+    try:
+        from app.services import storage_service
+        monkeypatch.setattr(storage_service, "check_minio_connection", lambda: True)
+    except Exception:
+        pass
 
 
 @pytest.fixture(autouse=True)

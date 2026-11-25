@@ -89,6 +89,7 @@ export const DashboardPage = () => {
 
   // Initial load and 60-second polling interval
   useEffect(() => {
+    document.title = 'Dashboard | DermAI';
     if (user?.role === 'patient') return;
 
     loadDashboardData();
@@ -293,58 +294,69 @@ export const DashboardPage = () => {
             </div>
           </div>
 
-          <div className="h-72 w-full">
-            {loading ? (
-              <div className="h-full flex items-center justify-center">
-                <div className="w-8 h-8 border-3 border-sky-200 border-t-sky-600 rounded-full animate-spin"></div>
-              </div>
-            ) : classDist.length === 0 ? (
-              <div className="h-full flex items-center justify-center text-xs text-slate-400">
-                No predictions recorded yet.
-              </div>
-            ) : (
-              <ResponsiveContainer width="100%" height="100%">
-                <BarChart
-                  data={classDist}
-                  margin={{ top: 15, right: 10, left: -20, bottom: 25 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                  <XAxis
-                    dataKey="class_code"
-                    tick={{ fill: '#64748b', fontSize: 11 }}
-                    tickLine={false}
-                    axisLine={{ stroke: '#e2e8f0' }}
-                  />
-                  <YAxis
-                    allowDecimals={false}
-                    tick={{ fill: '#64748b', fontSize: 11 }}
-                    tickLine={false}
-                    axisLine={{ stroke: '#e2e8f0' }}
-                  />
-                  <Tooltip
-                    content={({ active, payload }) => {
-                      if (active && payload && payload.length) {
-                        const item = payload[0].payload;
-                        return (
-                          <div className="bg-slate-900 text-white text-xs rounded-lg px-3 py-2 shadow-lg">
-                            <p className="font-bold">{item.class_name}</p>
-                            <p className="text-sky-300 mt-0.5">
-                              {item.count} cases ({item.percentage}%)
-                            </p>
-                          </div>
-                        );
-                      }
-                      return null;
-                    }}
-                  />
-                  <Bar
-                    dataKey="count"
-                    fill="#0284c7"
-                    radius={[6, 6, 0, 0]}
-                  />
-                </BarChart>
-              </ResponsiveContainer>
-            )}
+          <div className="overflow-x-auto pb-2">
+            <div className="h-72 min-w-[500px] w-full">
+              {loading ? (
+                <div className="h-full w-full flex flex-col justify-end p-4 space-y-3 animate-pulse bg-slate-50/50 rounded-xl">
+                  <div className="flex items-end justify-between h-48 space-x-3 pt-6">
+                    <div className="w-full bg-slate-200 rounded-t h-[40%]" />
+                    <div className="w-full bg-slate-200 rounded-t h-[75%]" />
+                    <div className="w-full bg-slate-200 rounded-t h-[30%]" />
+                    <div className="w-full bg-slate-200 rounded-t h-[90%]" />
+                    <div className="w-full bg-slate-200 rounded-t h-[55%]" />
+                    <div className="w-full bg-slate-200 rounded-t h-[80%]" />
+                    <div className="w-full bg-slate-200 rounded-t h-[20%]" />
+                  </div>
+                  <div className="h-4 bg-slate-200 rounded w-full" />
+                </div>
+              ) : classDist.length === 0 ? (
+                <div className="h-full flex items-center justify-center text-xs text-slate-400">
+                  No predictions recorded yet.
+                </div>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart
+                    data={classDist}
+                    margin={{ top: 15, right: 10, left: -20, bottom: 25 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                    <XAxis
+                      dataKey="class_code"
+                      tick={{ fill: '#64748b', fontSize: 11 }}
+                      tickLine={false}
+                      axisLine={{ stroke: '#e2e8f0' }}
+                    />
+                    <YAxis
+                      allowDecimals={false}
+                      tick={{ fill: '#64748b', fontSize: 11 }}
+                      tickLine={false}
+                      axisLine={{ stroke: '#e2e8f0' }}
+                    />
+                    <Tooltip
+                      content={({ active, payload }) => {
+                        if (active && payload && payload.length) {
+                          const item = payload[0].payload;
+                          return (
+                            <div className="bg-slate-900 text-white text-xs rounded-lg px-3 py-2 shadow-lg">
+                              <p className="font-bold">{item.class_name}</p>
+                              <p className="text-sky-300 mt-0.5">
+                                {item.count} cases ({item.percentage}%)
+                              </p>
+                            </div>
+                          );
+                        }
+                        return null;
+                      }}
+                    />
+                    <Bar
+                      dataKey="count"
+                      fill="#0284c7"
+                      radius={[6, 6, 0, 0]}
+                    />
+                  </BarChart>
+                </ResponsiveContainer>
+              )}
+            </div>
           </div>
 
           {/* Quick legend for class codes */}
@@ -371,63 +383,74 @@ export const DashboardPage = () => {
             </div>
           </div>
 
-          <div className="h-72 w-full">
-            {loading ? (
-              <div className="h-full flex items-center justify-center">
-                <div className="w-8 h-8 border-3 border-indigo-200 border-t-indigo-600 rounded-full animate-spin"></div>
-              </div>
-            ) : casesOverTime.length === 0 ? (
-              <div className="h-full flex items-center justify-center text-xs text-slate-400">
-                No time-series data available.
-              </div>
-            ) : (
-              <ResponsiveContainer width="100%" height="100%">
-                <LineChart
-                  data={casesOverTime}
-                  margin={{ top: 15, right: 15, left: -20, bottom: 25 }}
-                >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
-                  <XAxis
-                    dataKey="date"
-                    tickFormatter={formatChartDate}
-                    tick={{ fill: '#64748b', fontSize: 10 }}
-                    tickLine={false}
-                    axisLine={{ stroke: '#e2e8f0' }}
-                    interval={4}
-                  />
-                  <YAxis
-                    allowDecimals={false}
-                    tick={{ fill: '#64748b', fontSize: 11 }}
-                    tickLine={false}
-                    axisLine={{ stroke: '#e2e8f0' }}
-                  />
-                  <Tooltip
-                    content={({ active, payload }) => {
-                      if (active && payload && payload.length) {
-                        const item = payload[0].payload;
-                        return (
-                          <div className="bg-slate-900 text-white text-xs rounded-lg px-3 py-2 shadow-lg">
-                            <p className="font-semibold text-slate-300">{item.date}</p>
-                            <p className="text-indigo-300 font-bold mt-0.5">
-                              {item.count} {item.count === 1 ? 'case' : 'cases'}
-                            </p>
-                          </div>
-                        );
-                      }
-                      return null;
-                    }}
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="count"
-                    stroke="#4f46e5"
-                    strokeWidth={2.5}
-                    dot={{ r: 2.5, fill: '#4f46e5' }}
-                    activeDot={{ r: 5, stroke: '#818cf8', strokeWidth: 2 }}
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            )}
+          <div className="overflow-x-auto pb-2">
+            <div className="h-72 min-w-[500px] w-full">
+              {loading ? (
+                <div className="h-full w-full flex flex-col justify-end p-4 space-y-3 animate-pulse bg-slate-50/50 rounded-xl">
+                  <div className="flex items-end justify-between h-48 space-x-4 pt-6">
+                    <div className="w-full bg-indigo-100 rounded-t h-[20%]" />
+                    <div className="w-full bg-indigo-100 rounded-t h-[45%]" />
+                    <div className="w-full bg-indigo-200 rounded-t h-[65%]" />
+                    <div className="w-full bg-indigo-200 rounded-t h-[40%]" />
+                    <div className="w-full bg-indigo-300 rounded-t h-[80%]" />
+                    <div className="w-full bg-indigo-200 rounded-t h-[50%]" />
+                    <div className="w-full bg-indigo-100 rounded-t h-[70%]" />
+                  </div>
+                  <div className="h-4 bg-slate-200 rounded w-full" />
+                </div>
+              ) : casesOverTime.length === 0 ? (
+                <div className="h-full flex items-center justify-center text-xs text-slate-400">
+                  No time-series data available.
+                </div>
+              ) : (
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart
+                    data={casesOverTime}
+                    margin={{ top: 15, right: 15, left: -20, bottom: 25 }}
+                  >
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                    <XAxis
+                      dataKey="date"
+                      tickFormatter={formatChartDate}
+                      tick={{ fill: '#64748b', fontSize: 10 }}
+                      tickLine={false}
+                      axisLine={{ stroke: '#e2e8f0' }}
+                      interval={4}
+                    />
+                    <YAxis
+                      allowDecimals={false}
+                      tick={{ fill: '#64748b', fontSize: 11 }}
+                      tickLine={false}
+                      axisLine={{ stroke: '#e2e8f0' }}
+                    />
+                    <Tooltip
+                      content={({ active, payload }) => {
+                        if (active && payload && payload.length) {
+                          const item = payload[0].payload;
+                          return (
+                            <div className="bg-slate-900 text-white text-xs rounded-lg px-3 py-2 shadow-lg">
+                              <p className="font-semibold text-slate-300">{item.date}</p>
+                              <p className="text-indigo-300 font-bold mt-0.5">
+                                {item.count} {item.count === 1 ? 'case' : 'cases'}
+                              </p>
+                            </div>
+                          );
+                        }
+                        return null;
+                      }}
+                    />
+                    <Line
+                      type="monotone"
+                      dataKey="count"
+                      stroke="#4f46e5"
+                      strokeWidth={2.5}
+                      dot={{ r: 3, fill: '#4f46e5' }}
+                      activeDot={{ r: 5, fill: '#4338ca' }}
+                    />
+                  </LineChart>
+                </ResponsiveContainer>
+              )}
+            </div>
           </div>
 
           <div className="mt-3 pt-3 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">

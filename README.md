@@ -127,7 +127,25 @@ All configuration is centralized in `.env` and loaded by FastAPI and the fronten
 
 ---
 
-## 🚀 Quickstart Guide
+## Quick Start (Development)
+```bash
+cp .env.example .env   # fill in your values
+docker compose up -d
+```
+
+## Production
+```bash
+docker compose -f docker-compose.prod.yml up -d
+```
+
+## Running Tests
+```bash
+make test
+```
+
+---
+
+## 🚀 Detailed Setup Guide
 
 ### 1. Start Infrastructure Containers (Docker Compose)
 Start the PostgreSQL database and MinIO object storage:

@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import ReactCrop, { centerCrop, makeAspectCrop } from 'react-image-crop';
+import toast from 'react-hot-toast';
 import { casesApi } from '../api/client';
 import { QualityBadge } from '../components/QualityBadge';
 import {
@@ -54,6 +55,7 @@ export const UploadPage = () => {
 
   // Load case metadata
   useEffect(() => {
+    document.title = 'Upload & Screen | DermAI';
     const fetchCase = async () => {
       try {
         const data = await casesApi.getCase(caseId);
@@ -162,9 +164,11 @@ export const UploadPage = () => {
 
       const result = await casesApi.uploadImage(caseId, formData);
       setUploadResult(result);
+      toast.success('Upload successful & quality assessed!');
     } catch (err) {
       const detail = err.response?.data?.detail || 'Failed to upload image. Please try again.';
       setError(detail);
+      toast.error(detail);
     } finally {
       setUploading(false);
     }

@@ -2,14 +2,14 @@
 Pydantic schema for the /health diagnostic endpoint.
 """
 
-from datetime import datetime
-from pydantic import BaseModel
+from typing import Optional
+from pydantic import BaseModel, ConfigDict
 
 
 class HealthResponse(BaseModel):
+    model_config = ConfigDict(extra="allow")
+
     status: str
-    environment: str
-    timestamp: datetime
-    database_connected: bool
-    version: str
-    disclaimer: str
+    timestamp: str
+    db: str
+    minio: str

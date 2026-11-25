@@ -66,6 +66,7 @@ export const CliniciandashboardPage = () => {
   };
 
   useEffect(() => {
+    document.title = 'Clinician Dashboard | DermAI';
     if (isAuthenticated) {
       fetchData();
     }

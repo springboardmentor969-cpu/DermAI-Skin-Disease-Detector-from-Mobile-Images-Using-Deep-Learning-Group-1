@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
+import toast from 'react-hot-toast';
 import { casesApi } from '../api/client';
 import { useAuth } from '../context/AuthContext';
 import { QualityBadge } from '../components/QualityBadge';
@@ -100,6 +101,7 @@ export const CaseDetailPage = () => {
     setAnalysisErrors((prev) => ({ ...prev, [image.id]: '' }));
     try {
       const predResult = await casesApi.analyzeImage(image.id);
+      toast.success('Analysis complete!');
       const updatedImage = {
         ...image,
         latestPrediction: predResult,
@@ -117,6 +119,7 @@ export const CaseDetailPage = () => {
         err.message ||
         'AI Analysis failed. Please check image quality or server connection.';
       setAnalysisErrors((prev) => ({ ...prev, [image.id]: msg }));
+      toast.error(msg);
     } finally {
       setAnalyzingImageId(null);
     }
@@ -150,6 +153,7 @@ export const CaseDetailPage = () => {
   };
 
   useEffect(() => {
+    document.title = 'Case Details | DermAI';
     loadData();
   }, [caseId]);
 
@@ -575,7 +579,7 @@ export const CaseDetailPage = () => {
                               {analyzingImageId === img.id ? (
                                 <>
                                   <div className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-                                  <span>Running AI Screening...</span>
+                                  <span>Analyzing...</span>
                                 </>
                               ) : (
                                 <>

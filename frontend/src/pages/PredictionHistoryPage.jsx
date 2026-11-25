@@ -198,6 +198,7 @@ export const PredictionHistoryPage = () => {
   const limit = 10;
 
   useEffect(() => {
+    document.title = 'My History | DermAI';
     if (cachedHistoryState.items === null) {
       loadInitial();
     }
@@ -374,17 +375,17 @@ export const PredictionHistoryPage = () => {
 
       {/* Loading Skeleton */}
       {loading ? (
-        <div className="space-y-4">
+        <div className="space-y-4 w-full">
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs flex items-center space-x-4 animate-pulse"
+              className="bg-white rounded-2xl border border-slate-200/90 p-4 sm:p-5 shadow-xs flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 animate-pulse w-full"
             >
-              <div className="w-20 h-20 rounded-xl bg-slate-200 shrink-0" />
-              <div className="flex-1 space-y-2.5">
-                <div className="w-1/4 h-3.5 bg-slate-200 rounded" />
-                <div className="w-1/2 h-5 bg-slate-200 rounded" />
-                <div className="w-1/3 h-2.5 bg-slate-200 rounded" />
+              <div className="w-16 sm:w-20 h-16 sm:h-20 rounded-xl bg-slate-200 shrink-0" />
+              <div className="flex-1 space-y-2.5 w-full">
+                <div className="w-1/3 sm:w-1/4 h-3.5 bg-slate-200 rounded" />
+                <div className="w-2/3 sm:w-1/2 h-5 bg-slate-200 rounded" />
+                <div className="w-1/2 sm:w-1/3 h-2.5 bg-slate-200 rounded" />
               </div>
             </div>
           ))}
@@ -422,7 +423,7 @@ export const PredictionHistoryPage = () => {
               <div
                 key={entry.id}
                 onClick={() => navigate(`/cases/${entry.case_id}`)}
-                className="relative group cursor-pointer bg-white rounded-2xl border border-slate-200 hover:border-sky-300 p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200"
+                className="relative group cursor-pointer bg-white rounded-2xl border border-slate-200 hover:border-sky-300 p-4 sm:p-5 shadow-xs hover:shadow-md transition-all duration-200 w-full"
               >
                 {/* Timeline node */}
                 <div className="absolute -left-[31px] sm:-left-[39px] top-6 w-3.5 h-3.5 rounded-full border-2 border-white bg-sky-600 shadow-xs ring-4 ring-slate-100 group-hover:scale-125 transition-transform" />

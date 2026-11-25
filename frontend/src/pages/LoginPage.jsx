@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Mail, Lock, ArrowRight, AlertCircle } from 'lucide-react';
 import { DermoscopeLogo } from '../components/DermoscopeLogo';
 
 export const LoginPage = () => {
+  useEffect(() => {
+    document.title = 'Login | DermAI';
+  }, []);
+
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
