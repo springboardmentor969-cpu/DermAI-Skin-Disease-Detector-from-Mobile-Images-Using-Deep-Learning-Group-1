@@ -53,7 +53,9 @@ export const AnalysisReportModal = ({
   gradcamAvailable = true,
   analysisDate,
   disclaimer = 'DermAI is an educational & screening decision-support tool, NOT a medical diagnosis.',
+  numModelsUsed,
 }) => {
+  const actualModelsCount = numModelsUsed ?? topPrediction?.num_models_used ?? (predictions && predictions[0]?.num_models_used) ?? (topPrediction?.ensemble ? 2 : 1);
   const [heatmapUrl, setHeatmapUrl] = useState(null);
   const [overlayUrl, setOverlayUrl] = useState(null);
   const [gradcamLoading, setGradcamLoading] = useState(false);
@@ -490,8 +492,8 @@ export const AnalysisReportModal = ({
                 </p>
               </div>
 
-              {/* Top prediction risk badge indicator */}
-              <div className="flex items-center space-x-2">
+              {/* Top prediction risk badge indicator & Ensemble mode badge */}
+              <div className="flex items-center flex-wrap gap-2">
                 <span className="text-xs font-semibold text-slate-500">Risk Assessment:</span>
                 <span
                   className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold tracking-wide border shadow-2xs ${
@@ -504,6 +506,15 @@ export const AnalysisReportModal = ({
                 >
                   {finalRiskLevel} RISK
                 </span>
+                {actualModelsCount > 1 ? (
+                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-800 border border-purple-200">
+                    Ensemble of {actualModelsCount} models
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-700 border border-slate-200">
+                    Single model
+                  </span>
+                )}
               </div>
             </div>
 

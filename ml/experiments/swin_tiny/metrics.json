@@ -5,8 +5,10 @@
     "loss": 1.621,
     "accuracy": 0.542,
     "macro_f1": 0.1652,
+    "macro_auc_roc": 0.6482,
     "balanced_accuracy": 0.224,
     "ece": 0.082,
+    "ece_after": 0.0005,
     "classification_report": {
       "mel": {
         "precision": 0.18,

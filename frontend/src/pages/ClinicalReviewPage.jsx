@@ -444,9 +444,14 @@ export const ClinicalReviewPage = () => {
           </div>
 
           <div className="text-right sm:border-l sm:border-sky-200 sm:pl-6">
-            <div className="text-xs font-semibold text-slate-500">Architecture</div>
-            <div className="text-xs font-mono font-medium text-slate-800 mt-0.5">
-              {prediction?.model_version || 'Ensemble: ResNet50 + EfficientNet-B0'}
+            <div className="text-xs font-semibold text-slate-500">Architecture & Ensemble</div>
+            <div className="text-xs font-bold text-purple-700 mt-0.5">
+              {(prediction?.num_models_used ?? (prediction?.ensemble ? 3 : 1)) > 1
+                ? `Ensemble of ${prediction?.num_models_used || 3} models`
+                : 'Single model'}
+            </div>
+            <div className="text-xs font-mono font-medium text-slate-600 mt-0.5">
+              {prediction?.model_version || 'ResNet50 + Swin-T Ensemble'}
             </div>
           </div>
         </div>

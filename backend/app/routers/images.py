@@ -54,6 +54,7 @@ def format_prediction_response(
     urgency_days: Optional[int] = None,
     probabilities: Optional[dict] = None,
     all_predictions: Optional[list] = None,
+    num_models_used: Optional[int] = None,
 ) -> PredictionResponse:
     """Enriches a Prediction DB record with clinical review warning, demo model flag, risk scores, and disclaimer."""
     is_low_conf = bool(pred.confidence < settings.CONFIDENCE_THRESHOLD)
@@ -99,6 +100,7 @@ def format_prediction_response(
         urgency_days=final_urgency_days,
         probabilities=probabilities,
         all_predictions=all_predictions,
+        num_models_used=num_models_used,
     )
 
 
@@ -211,6 +213,7 @@ def analyze_image(
         urgency_days=analysis_result.get("urgency_days"),
         probabilities=analysis_result.get("probabilities"),
         all_predictions=analysis_result.get("all_predictions"),
+        num_models_used=analysis_result.get("num_models_used"),
     )
 
 

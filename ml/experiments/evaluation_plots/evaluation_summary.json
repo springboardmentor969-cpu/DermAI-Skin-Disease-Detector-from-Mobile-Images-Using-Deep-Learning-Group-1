@@ -1,0 +1,75 @@
+{
+  "model_architecture": "resnet50",
+  "validation_samples": 193,
+  "validation_accuracy": 0.1399,
+  "ece_before_calibration": 0.0175,
+  "optimal_temperature_t": 0.7069,
+  "ece_after_calibration": 0.0238,
+  "ece_threshold_met": true,
+  "per_class_auc": {
+    "akiec": 0.5053,
+    "bcc": 0.5765,
+    "bkl": 0.409,
+    "df": 0.5272,
+    "mel": 0.5513,
+    "nv": 0.6564,
+    "vasc": 0.5693
+  },
+  "classification_report": {
+    "akiec": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 30.0
+    },
+    "bcc": {
+      "precision": 1.0,
+      "recall": 0.03333333333333333,
+      "f1-score": 0.06451612903225806,
+      "support": 30.0
+    },
+    "bkl": {
+      "precision": 0.11764705882352941,
+      "recall": 0.06666666666666667,
+      "f1-score": 0.0851063829787234,
+      "support": 30.0
+    },
+    "df": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 19.0
+    },
+    "mel": {
+      "precision": 0.0625,
+      "recall": 0.06666666666666667,
+      "f1-score": 0.06451612903225806,
+      "support": 30.0
+    },
+    "nv": {
+      "precision": 0.16923076923076924,
+      "recall": 0.7333333333333333,
+      "f1-score": 0.275,
+      "support": 30.0
+    },
+    "vasc": {
+      "precision": 0.0,
+      "recall": 0.0,
+      "f1-score": 0.0,
+      "support": 24.0
+    },
+    "accuracy": 0.13989637305699482,
+    "macro avg": {
+      "precision": 0.1927682611506141,
+      "recall": 0.12857142857142856,
+      "f1-score": 0.0698769487204628,
+      "support": 193.0
+    },
+    "weighted avg": {
+      "precision": 0.20974784892035733,
+      "recall": 0.13989637305699482,
+      "f1-score": 0.07603191311552945,
+      "support": 193.0
+    }
+  }
+}

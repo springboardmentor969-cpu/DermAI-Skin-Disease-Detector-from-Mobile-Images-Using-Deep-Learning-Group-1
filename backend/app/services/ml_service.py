@@ -19,6 +19,7 @@ import numpy as np
 
 from app.config import settings
 from app.services.inference import inference_service
+from ml.ensemble.ensemble_predict import ensemble_predict
 
 logger = logging.getLogger("dermai.ml_service")
 
@@ -181,13 +182,32 @@ class MLService:
         if cached is not None:
             return cached
 
-        # Execute inference
+        # Execute ensemble inference across available checkpoints
+        try:
+            ens_result = ensemble_predict(image_input)
+            num_models_used = ens_result.get("num_models_used", 1)
+        except Exception as e:
+            logger.warning(f"[MLService] Ensemble prediction failed ({e}), falling back to single model.")
+            ens_result = None
+            num_models_used = 1
+
+        # Execute inference pipeline (segmentation, Grad-CAM, risk scoring)
         prediction = inference_service.predict(
             image_input=image_input,
             run_segmentation=run_segmentation,
             threshold=threshold,
             image_id=image_id,
         )
+
+        # Merge ensemble soft-voting results if available
+        if ens_result:
+            prediction["predicted_class"] = ens_result.get("predicted_class", prediction.get("predicted_class"))
+            prediction["confidence"] = ens_result.get("confidence", prediction.get("confidence"))
+            prediction["probabilities"] = ens_result.get("probabilities", prediction.get("probabilities"))
+            prediction["top_n"] = ens_result.get("top_n", prediction.get("top_n"))
+            prediction["ensemble"] = bool(num_models_used > 1)
+
+        prediction["num_models_used"] = num_models_used
 
         # Store in Redis
         self.set_cached_prediction(image_input, prediction, ttl=CACHE_TTL_SECONDS)

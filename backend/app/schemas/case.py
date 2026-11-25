@@ -51,6 +51,7 @@ class PredictionResponse(BaseModel):
     urgency_days: Optional[int] = None
     probabilities: Optional[Dict[str, float]] = None
     all_predictions: Optional[List[Dict[str, Any]]] = None
+    num_models_used: Optional[int] = None
 
     model_config = ConfigDict(from_attributes=True)
 

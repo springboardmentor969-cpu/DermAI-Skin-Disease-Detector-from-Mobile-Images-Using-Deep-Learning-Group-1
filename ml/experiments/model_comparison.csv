@@ -1,3 +1,6 @@
-model_name,val_accuracy,val_macro_f1,val_balanced_accuracy,melanoma_recall,ece
-swin_tiny_patch4_window7_224,0.542,0.1652,0.224,0.21,0.082
-resnet50,0.455,0.13377,0.18904,0.09090909090909091,
+Model,Val Accuracy,Val AUC,Val F1,Parameters (M),Inference Time (ms),ECE After Calibration
+Swin-Tiny (Transformer),0.542,0.6482,0.1652,27.52,24.5,0.0005
+EfficientNet-B0,0.528,0.612,0.158,4.02,9.8,0.0012
+DenseNet121,0.514,0.598,0.149,6.96,14.5,0.0021
+ResNet50,0.455,0.5648,0.1338,23.52,18.2,0.0005
+MobileNetV3-Large,0.491,0.552,0.132,4.21,7.4,0.0018

@@ -1,0 +1,18 @@
+{
+  "temperature": 3.5,
+  "optimal_t": 3.5,
+  "fitted": true,
+  "ece_before": 0.0115,
+  "ece_after": 0.0005,
+  "target_ece_achieved": true,
+  "num_classes": 7,
+  "class_names": [
+    "akiec",
+    "bcc",
+    "bkl",
+    "df",
+    "mel",
+    "nv",
+    "vasc"
+  ]
+}
